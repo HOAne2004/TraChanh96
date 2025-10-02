@@ -1,0 +1,153 @@
+{
+  "footerInfo": {
+    "address": "Cụm CN Bình Lục, Bình An, Ninh Bình",
+    "email": "admin@gmail.com",
+    "phone": "12345678",
+    "certificate": "Giấy chứng nhận số 123456",
+    "facebook": "https://facebook.com/hoan",
+    "zalo": "https://zalo.me/hoan",
+    "tiktok": "https://tiktok.com/@hoan"
+  },
+  "products": [
+    {
+      "id": 1,
+      "name": "Trà chanh",
+      "price": 15000,
+      "rating": 5,
+      "image": "/images/products/dauDoSuaDua.png",
+      "created_at": "20/9/2025",
+      "categoryId": [1, 5]
+    },
+    {
+      "id": 2,
+      "name": "Trà ô long nhài",
+      "price": 35000,
+      "rating": 5,
+      "image": "/images/products/dauDoSuaDua.png",
+      "created_at": "20/9/2025",
+      "categoryId": [2, 5]
+    },
+    {
+      "id": 3,
+      "name": "Trà xoài chanh leo",
+      "price": 25000,
+      "rating": 5,
+      "image": "/images/products/dauDoSuaDua.png",
+      "created_at": "20/9/2025",
+      "categoryId": [1, 6]
+    },
+    {
+      "id": 4,
+      "name": "Trà vải",
+      "price": 20000,
+      "rating": 5,
+      "image": "/images/products/dauDoSuaDua.png",
+      "created_at": "20/9/2025",
+      "categoryId": [1, 5]
+    },
+    {
+      "id": 5,
+      "name": "Sữa tươi nướng trân châu đường đen",
+      "price": 35000,
+      "rating": 5,
+      "image": "/images/products/dauDoSuaDua.png",
+      "created_at": "20/9/2025",
+      "categoryId": [4, 6]
+    },
+    {
+      "id": 6,
+      "name": "Trà sữa nướng trân châu đường đen",
+      "price": 35000,
+      "rating": 4.9,
+      "image": "/images/products/dauDoSuaDua.png",
+      "created_at": "20/9/2025",
+      "categoryId": [3, 5]
+    },
+    {
+      "id": 7,
+      "name": "Trà sữa ô long",
+      "price": 35000,
+      "rating": 4.9,
+      "image": "/images/products/dauDoSuaDua.png",
+      "created_at": "20/9/2025",
+      "categoryId": [3, 5]
+    }
+  ],
+  "categories": [
+    { "id": 1, "name": "Trà chanh" },
+    { "id": 2, "name": "Trà ô long" },
+    { "id": 3, "name": "Trà sữa" },
+    { "id": 4, "name": "Sữa tươi" },
+    { "id": 5, "name": "Sản phẩm nổi bật" },
+    { "id": 6, "name": "Sản phẩm mới" },
+    { "id": 7, "name": "Gà rán" }
+  ],
+  "carousel": [
+    {
+      "id": 1,
+      "image": "/images/heroImages/slide1.jpg",
+      "title": "Chào mừng đến với trà chanh 1996"
+    },
+    {
+      "id": 2,
+      "image": "/images/heroImages/slide2.jpg",
+      "title": "Khuyến mãi cực hot hôm nay!"
+    }
+  ],
+  "stores": [
+    {
+      "id": 1,
+      "name": "Cửa hàng Hà Đông",
+      "address": "Số 65 Phạm Ngọc Thạch, Đống Đa, Hà Nội",
+      "image": "/images/stores/hn.jpg",
+      "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021..."
+    },
+    {
+      "id": 2,
+      "name": "Cửa hàng Đống Đa",
+      "address": "Số 65 Phạm Ngọc Thạch, Đống Đa, Hà Nội",
+      "image": "/images/stores/hn.jpg",
+      "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021..."
+    },
+    {
+      "id": 3,
+      "name": "Cửa hàng Tân Lập",
+      "address": "Số 65 Phạm Ngọc Thạch, Đống Đa, Hà Nội",
+      "image": "/images/stores/hn.jpg",
+      "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021..."
+    },
+    {
+      "id": 4,
+      "name": "Cửa hàng Ninh Bình",
+      "address": "Số 65 Phạm Ngọc Thạch, Đống Đa, Hà Nội",
+      "image": "/images/stores/hn.jpg",
+      "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021..."
+    }
+  ],
+  "news": [
+    {
+      "id": 1,
+      "name": "Trà chanh 96 - Vị trà vị nhà",
+      "image": "/images/stores/hn.jpg",
+      "description": "Một buổi chiều tan học, bạn tìm kiếm một góc nhỏ để thư giãn, trò chuyện cùng bạn bè? Chắc hẳn đó phải là một nơi yên bình nhưng không kém phần sôi động. Trà Chanh 1996 chính là điểm đến lý tưởng ấy. Bạn có thể tìm thấy tại đây những hương vị thân quen như Trà Chanh Truyền Thống, Trà Đào Cam Sả, hay Bạc Xỉu - những thức uống đã gắn liền với ký ức tuổi thơ. Ngoài ra, chúng mình còn có những món mới lạ như Trà Chanh Bưởi Hồng, Trà Dâu Tây, và Trà Sữa Olong, đảm bảo mỗi lần ghé đều có một vị ngon bất ngờ. Đến với Trà Chanh 1996, bạn không chỉ được thưởng thức những ly trà chanh chuẩn vị mà còn được trải nghiệm không gian đậm chất 'vintage', nơi bạn có thể chụp những bức ảnh đẹp, ghi lại những khoảnh khắc đáng nhớ cùng bạn bè.  Với mức giá hợp lý, Trà Chanh 1996 sẽ là lựa chọn tuyệt vời cho các buổi hẹn hò, tụ tập, hay đơn giản là một nơi để bạn F5 bản thân sau những giờ học căng thẳng. Hãy ghé Trà Chanh 1996 ngay hôm nay để tận hưởng hương vị 'vị trà vị nhà' bạn nhé!"
+    },
+    {
+      "id": 4,
+      "name": "Trà chanh 96 - Vị trà vị nhà",
+      "image": "/images/stores/hn.jpg",
+      "description": "Một buổi chiều tan học, bạn tìm kiếm một góc nhỏ để thư giãn, trò chuyện cùng bạn bè? Chắc hẳn đó phải là một nơi yên bình nhưng không kém phần sôi động. Trà Chanh 1996 chính là điểm đến lý tưởng ấy. Bạn có thể tìm thấy tại đây những hương vị thân quen như Trà Chanh Truyền Thống, Trà Đào Cam Sả, hay Bạc Xỉu - những thức uống đã gắn liền với ký ức tuổi thơ. Ngoài ra, chúng mình còn có những món mới lạ như Trà Chanh Bưởi Hồng, Trà Dâu Tây, và Trà Sữa Olong, đảm bảo mỗi lần ghé đều có một vị ngon bất ngờ. Đến với Trà Chanh 1996, bạn không chỉ được thưởng thức những ly trà chanh chuẩn vị mà còn được trải nghiệm không gian đậm chất 'vintage', nơi bạn có thể chụp những bức ảnh đẹp, ghi lại những khoảnh khắc đáng nhớ cùng bạn bè.  Với mức giá hợp lý, Trà Chanh 1996 sẽ là lựa chọn tuyệt vời cho các buổi hẹn hò, tụ tập, hay đơn giản là một nơi để bạn F5 bản thân sau những giờ học căng thẳng. Hãy ghé Trà Chanh 1996 ngay hôm nay để tận hưởng hương vị 'vị trà vị nhà' bạn nhé!"
+    },
+    {
+      "id": 2,
+      "name": "Trà chanh 96 - Vị trà vị nhà",
+      "image": "/images/stores/hn.jpg",
+      "description": "Một buổi chiều tan học, bạn tìm kiếm một góc nhỏ để thư giãn, trò chuyện cùng bạn bè? Chắc hẳn đó phải là một nơi yên bình nhưng không kém phần sôi động. Trà Chanh 1996 chính là điểm đến lý tưởng ấy. Bạn có thể tìm thấy tại đây những hương vị thân quen như Trà Chanh Truyền Thống, Trà Đào Cam Sả, hay Bạc Xỉu - những thức uống đã gắn liền với ký ức tuổi thơ. Ngoài ra, chúng mình còn có những món mới lạ như Trà Chanh Bưởi Hồng, Trà Dâu Tây, và Trà Sữa Olong, đảm bảo mỗi lần ghé đều có một vị ngon bất ngờ. Đến với Trà Chanh 1996, bạn không chỉ được thưởng thức những ly trà chanh chuẩn vị mà còn được trải nghiệm không gian đậm chất 'vintage', nơi bạn có thể chụp những bức ảnh đẹp, ghi lại những khoảnh khắc đáng nhớ cùng bạn bè.  Với mức giá hợp lý, Trà Chanh 1996 sẽ là lựa chọn tuyệt vời cho các buổi hẹn hò, tụ tập, hay đơn giản là một nơi để bạn F5 bản thân sau những giờ học căng thẳng. Hãy ghé Trà Chanh 1996 ngay hôm nay để tận hưởng hương vị 'vị trà vị nhà' bạn nhé!"
+    },
+    {
+      "id": 3,
+      "name": "Trà chanh 96 - Vị trà vị nhà",
+      "image": "/images/stores/hn.jpg",
+      "description": "Một buổi chiều tan học, bạn tìm kiếm một góc nhỏ để thư giãn, trò chuyện cùng bạn bè? Chắc hẳn đó phải là một nơi yên bình nhưng không kém phần sôi động. Trà Chanh 1996 chính là điểm đến lý tưởng ấy. Bạn có thể tìm thấy tại đây những hương vị thân quen như Trà Chanh Truyền Thống, Trà Đào Cam Sả, hay Bạc Xỉu - những thức uống đã gắn liền với ký ức tuổi thơ. Ngoài ra, chúng mình còn có những món mới lạ như Trà Chanh Bưởi Hồng, Trà Dâu Tây, và Trà Sữa Olong, đảm bảo mỗi lần ghé đều có một vị ngon bất ngờ. Đến với Trà Chanh 1996, bạn không chỉ được thưởng thức những ly trà chanh chuẩn vị mà còn được trải nghiệm không gian đậm chất 'vintage', nơi bạn có thể chụp những bức ảnh đẹp, ghi lại những khoảnh khắc đáng nhớ cùng bạn bè.  Với mức giá hợp lý, Trà Chanh 1996 sẽ là lựa chọn tuyệt vời cho các buổi hẹn hò, tụ tập, hay đơn giản là một nơi để bạn F5 bản thân sau những giờ học căng thẳng. Hãy ghé Trà Chanh 1996 ngay hôm nay để tận hưởng hương vị 'vị trà vị nhà' bạn nhé!"
+    }
+  ]
+}
