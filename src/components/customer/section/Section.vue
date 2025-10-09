@@ -59,12 +59,12 @@ const filteredItems = computed(() => {
     return news.value.slice(0, visibleCount.value)
   }
   return products.value
-    .filter((p) =>
-      Array.isArray(p.categoryId)
-        ? p.categoryId.includes(props.categoryId)
-        : p.categoryId === props.categoryId,
-    )
-    .slice(0, visibleCount.value)
+  .filter((p) =>
+    Array.isArray(p.categoryId)
+      ? p.categoryId.includes(Number(props.categoryId))
+      : p.categoryId === Number(props.categoryId),
+  )
+  .slice(0, visibleCount.value)
 })
 
 // ----- Scroll / Drag logic -----
