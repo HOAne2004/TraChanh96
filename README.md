@@ -33,5 +33,7 @@ npm run build
 ```sh
 npm run lint
 ```
-# Chạy Json Server
+### Chạy Json Server
+```sh
 npx json-server --watch db.json --port 3000
+```
