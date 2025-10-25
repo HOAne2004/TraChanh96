@@ -4,22 +4,18 @@ import { RouterLink, useRoute } from 'vue-router'
 
 const props = defineProps({
   label: { type: String, default: '' },
-  icon: { type: String, default: '' },
   to: { type: [String, Object], required: true },
-  variant: { type: String, default: 'nav' }, // nav | profile | outline
+  variant: { type: String, default: 'nav' },
   disabled: { type: Boolean, default: false },
+  badge: { type: [String, Number], default: null }, // Thêm prop badge
 })
 
 const route = useRoute()
 
-// Kiểm tra nếu route hiện tại khớp với "to"
 const isActive = computed(() => {
-  return typeof props.to === 'string'
-    ? route.path === props.to
-    : route.path === props.to.path
+  return typeof props.to === 'string' ? route.path === props.to : route.path === props.to.path
 })
 
-// Áp dụng class tùy theo variant và trạng thái
 const classes = computed(() => {
   const base =
     'relative inline-flex items-center gap-2 px-4 py-2 font-medium transition-all duration-300 rounded-lg'
@@ -28,43 +24,46 @@ const classes = computed(() => {
     nav: `
       text-primary
       hover:scale-[1.05]
-      after:content-[''] after:absolute after:bottom-0 after:left-0 
+      after:content-[''] after:absolute after:bottom-1 after:left-0 
       after:w-0 after:h-[2px] after:bg-primary 
       after:transition-all after:duration-300 
       hover:after:w-full
     `,
     profile: `
-      block text-left w-full text-gray-800 dark:text-gray-100 
+      block text-left text-gray-800 dark:text-gray-100 
       hover:bg-gray-100 dark:hover:bg-gray-700
     `,
     outline: `
-      border border-gray-300 text-gray-700 dark:text-gray-200 
-      hover:bg-gray-100 dark:hover:bg-gray-800
+      border border-green-600 text-green-500 p-2 rounded-full 
+      hover:bg-green-50 transition-colors duration-200
     `,
   }
 
   const activeClass = isActive.value
-    ? 'text-primary font-semibold after:w-full after:bg-primary'
+    ? props.variant === 'outline'
+      ? 'bg-green-100 border-green-700 text-green-700'
+      : 'text-primary font-semibold after:w-full after:bg-primary'
     : ''
 
   const disabledClass = props.disabled ? 'opacity-50 cursor-not-allowed' : ''
 
-  return [
-    base,
-    variants[props.variant] || variants.nav,
-    activeClass,
-    disabledClass,
-  ].join(' ')
+  return [base, variants[props.variant] || variants.nav, activeClass, disabledClass].join(' ')
 })
 </script>
 
 <template>
-  <RouterLink
-    :to="to"
-    :class="classes"
-    :aria-disabled="disabled"
-  >
-    <span v-if="icon" class="text-lg">{{ icon }}</span>
-    <slot>{{ label }}</slot>
-  </RouterLink>
+  <div class="relative inline-flex">
+    <RouterLink :to="to" :class="classes" :aria-disabled="disabled">
+      <slot name="icon"></slot>
+      <slot>{{ label }}</slot>
+    </RouterLink>
+
+    <!-- Badge -->
+    <span
+      v-if="badge && badge > 0"
+      class="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center z-10"
+    >
+      {{ badge }}
+    </span>
+  </div>
 </template>

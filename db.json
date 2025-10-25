@@ -8,80 +8,339 @@
     "zalo": "https://zalo.me/hoan",
     "tiktok": "https://tiktok.com/@hoan"
   },
+
+  "storePolicies": [
+    {
+      "id": 1,
+      "storeId": 1,
+      "policyName": "Chính sách giao hàng mặc định",
+      "prepareTime": "15–20 phút",
+      "deliveryRadius": "10km quanh Đại học Công nghiệp",
+      "deliveryAreas": ["Bắc Từ Liêm", "Cầu Giấy", "Nam Từ Liêm"],
+      "deliveryTimeEstimate": "30–45 phút",
+      "deliveryFee": 15000,
+      "freeShipThreshold": 200000,
+      "extraFeePerKm": 2000,
+      "refundPolicy": "Hoàn tiền nếu hàng bị đổ vỡ hoặc giao sai.",
+      "returnWindow": "Trong vòng 24h sau khi nhận hàng",
+      "cancelPolicy": "Chỉ được hủy trước khi xác nhận đơn hàng",
+      "supportPhone": "0123 456 789",
+      "supportEmail": "support@drinkstore.vn",
+      "note": "Không giao trong giờ cao điểm 7h30-8h30",
+      "lastUpdated": "2025-10-10T09:00:00Z"
+    }
+  ],
+
+  "toppings": [
+    {
+      "id": 1,
+      "name": "Chân châu nấu",
+      "price": "10000",
+      "image": "/images/products/tranchauden.png"
+    },
+    {
+      "id": 2,
+      "name": "Chân châu giòn",
+      "price": "5000",
+      "image": "/images/products/tranchautrang.png"
+    },
+    {
+      "id": 3,
+      "name": "Nha đam",
+      "price": "5000",
+      "image": "/images/products/thachnhadam.png"
+    }
+  ],
+
   "products": [
     {
       "id": 1,
       "name": "Trà chanh",
       "price": 15000,
       "rating": 5,
+      "sold": 200,
       "image": "/images/products/dauDoSuaDua.png",
-      "created_at": "20/9/2025",
-      "categoryId": [1, 5]
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-20",
+      "categoryId": 1,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": 2,
       "name": "Trà ô long nhài",
       "price": 35000,
       "rating": 5,
+      "sold": 140,
       "image": "/images/products/dauDoSuaDua.png",
-      "created_at": "20/9/2025",
-      "categoryId": [2, 5]
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-18",
+      "categoryId": 2,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": 3,
       "name": "Trà xoài chanh leo",
       "price": 25000,
       "rating": 5,
+      "sold": 240,
       "image": "/images/products/dauDoSuaDua.png",
-      "created_at": "20/9/2025",
-      "categoryId": [1, 6]
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-22",
+      "categoryId": 1,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": 4,
       "name": "Trà vải",
       "price": 20000,
       "rating": 5,
+      "sold": 200,
       "image": "/images/products/dauDoSuaDua.png",
-      "created_at": "20/9/2025",
-      "categoryId": [1, 5]
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-21",
+      "categoryId": 1,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": 5,
       "name": "Sữa tươi nướng trân châu đường đen",
       "price": 35000,
       "rating": 5,
+      "sold": 200,
       "image": "/images/products/dauDoSuaDua.png",
-      "created_at": "20/9/2025",
-      "categoryId": [4, 6]
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-25",
+      "categoryId": 4,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": 6,
       "name": "Trà sữa nướng trân châu đường đen",
       "price": 35000,
       "rating": 4.9,
+      "sold": 500,
       "image": "/images/products/dauDoSuaDua.png",
-      "created_at": "20/9/2025",
-      "categoryId": [3, 5]
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-24",
+      "categoryId": 3,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": 7,
       "name": "Trà sữa ô long",
       "price": 35000,
       "rating": 4.9,
+      "sold": 200,
       "image": "/images/products/dauDoSuaDua.png",
-      "created_at": "20/9/2025",
-      "categoryId": [3, 5]
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-26",
+      "categoryId": 3,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
+    },
+    {
+      "id": 8,
+      "name": "Trà dâu tây kem cheese",
+      "price": 40000,
+      "rating": 5,
+      "sold": 350,
+      "image": "/images/products/dauDoSuaDua.png",
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-28",
+      "categoryId": 5,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
+    },
+    {
+      "id": 9,
+      "name": "Trà chanh bưởi hồng",
+      "price": 32000,
+      "rating": 4.8,
+      "sold": 420,
+      "image": "/images/products/dauDoSuaDua.png",
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-30",
+      "categoryId": 5,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
+    },
+    {
+      "id": 10,
+      "name": "Cà phê sữa đá",
+      "price": 30000,
+      "rating": 5,
+      "sold": 600,
+      "image": "/images/products/dauDoSuaDua.png",
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-27",
+      "categoryId": 6,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
+    },
+    {
+      "id": 11,
+      "name": "Cà phê đen đá",
+      "price": 28000,
+      "rating": 4.7,
+      "sold": 480,
+      "image": "/images/products/dauDoSuaDua.png",
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-29",
+      "categoryId": 6,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
+    },
+    {
+      "id": 12,
+      "name": "Trà đào cam sả",
+      "price": 35000,
+      "rating": 4.9,
+      "sold": 520,
+      "image": "/images/products/dauDoSuaDua.png",
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-28",
+      "categoryId": 1,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
+    },
+    {
+      "id": 13,
+      "name": "Matcha đá xay",
+      "price": 45000,
+      "rating": 4.8,
+      "sold": 370,
+      "image": "/images/products/dauDoSuaDua.png",
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-29",
+      "categoryId": 7,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
+    },
+    {
+      "id": 14,
+      "name": "Socola đá xay",
+      "price": 45000,
+      "rating": 4.9,
+      "sold": 390,
+      "image": "/images/products/dauDoSuaDua.png",
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-30",
+      "categoryId": 7,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
+    },
+    {
+      "id": 15,
+      "name": "Bánh tiramisu",
+      "price": 55000,
+      "rating": 5,
+      "sold": 180,
+      "image": "/images/products/dauDoSuaDua.png",
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-28",
+      "categoryId": 8,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
+    },
+    {
+      "id": 16,
+      "name": "Bánh su kem",
+      "price": 25000,
+      "rating": 4.7,
+      "sold": 260,
+      "image": "/images/products/dauDoSuaDua.png",
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-29",
+      "categoryId": 8,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
+    },
+    {
+      "id": 17,
+      "name": "Nước chanh tươi",
+      "price": 15000,
+      "rating": 4.8,
+      "sold": 330,
+      "image": "/images/products/dauDoSuaDua.png",
+      "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+      "createdAt": "2025-09-25",
+      "categoryId": 9,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "toppingIds": [1, 2, 3]
     }
   ],
+
   "categories": [
     { "id": 1, "name": "Trà chanh" },
     { "id": 2, "name": "Trà ô long" },
     { "id": 3, "name": "Trà sữa" },
     { "id": 4, "name": "Sữa tươi" },
-    { "id": 5, "name": "Sản phẩm nổi bật" },
-    { "id": 6, "name": "Sản phẩm mới" },
-    { "id": 7, "name": "Gà rán" }
+    { "id": 5, "name": "Trà trái cây" },
+    { "id": 6, "name": "Cà phê" },
+    { "id": 7, "name": "Đá xay" },
+    { "id": 8, "name": "Bánh ngọt" },
+    { "id": 9, "name": "Nước giải khát" }
   ],
+
+  "sizes": [
+    {
+      "id": 1,
+      "sizes": [
+        { "label": "S", "extraPrice": 0 },
+        { "label": "M", "extraPrice": 5000 },
+        { "label": "L", "extraPrice": 8000 }
+      ]
+    }
+  ],
+
+  "sugarLevels": [
+    {
+      "id": 1,
+      "levels": [
+        { "label": "0%", "value": 0 },
+        { "label": "30%", "value": 30 },
+        { "label": "50%", "value": 50 },
+        { "label": "70%", "value": 70 },
+        { "label": "100%", "value": 100 }
+      ]
+    }
+  ],
+  "iceLevels": [
+    {
+      "id": 1,
+      "levels": [
+        { "label": "0%", "value": 0 },
+        { "label": "30%", "value": 30 },
+        { "label": "50%", "value": 50 },
+        { "label": "70%", "value": 70 },
+        { "label": "100%", "value": 100 }
+      ]
+    }
+  ],
+
   "carousel": [
     {
       "id": 1,
@@ -100,28 +359,32 @@
       "name": "Cửa hàng Hà Đông",
       "address": "Số 65 Phạm Ngọc Thạch, Đống Đa, Hà Nội",
       "image": "/images/stores/hn.jpg",
-      "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021..."
+      "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021...",
+      "openDate": "2025-09-25"
     },
     {
       "id": 2,
       "name": "Cửa hàng Đống Đa",
       "address": "Số 65 Phạm Ngọc Thạch, Đống Đa, Hà Nội",
       "image": "/images/stores/hn.jpg",
-      "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021..."
+      "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021...",
+      "openDate": "2025-09-25"
     },
     {
       "id": 3,
       "name": "Cửa hàng Tân Lập",
       "address": "Số 65 Phạm Ngọc Thạch, Đống Đa, Hà Nội",
       "image": "/images/stores/hn.jpg",
-      "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021..."
+      "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021...",
+      "openDate": "2025-09-25"
     },
     {
       "id": 4,
       "name": "Cửa hàng Ninh Bình",
       "address": "Số 65 Phạm Ngọc Thạch, Đống Đa, Hà Nội",
       "image": "/images/stores/hn.jpg",
-      "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021..."
+      "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021...",
+      "openDate": "2025-09-25"
     }
   ],
   "news": [
@@ -129,25 +392,47 @@
       "id": 1,
       "name": "Trà chanh 96 - Vị trà vị nhà",
       "image": "/images/stores/hn.jpg",
+      "date": "2025-09-25",
       "description": "Một buổi chiều tan học, bạn tìm kiếm một góc nhỏ để thư giãn, trò chuyện cùng bạn bè? Chắc hẳn đó phải là một nơi yên bình nhưng không kém phần sôi động. Trà Chanh 1996 chính là điểm đến lý tưởng ấy. Bạn có thể tìm thấy tại đây những hương vị thân quen như Trà Chanh Truyền Thống, Trà Đào Cam Sả, hay Bạc Xỉu - những thức uống đã gắn liền với ký ức tuổi thơ. Ngoài ra, chúng mình còn có những món mới lạ như Trà Chanh Bưởi Hồng, Trà Dâu Tây, và Trà Sữa Olong, đảm bảo mỗi lần ghé đều có một vị ngon bất ngờ. Đến với Trà Chanh 1996, bạn không chỉ được thưởng thức những ly trà chanh chuẩn vị mà còn được trải nghiệm không gian đậm chất 'vintage', nơi bạn có thể chụp những bức ảnh đẹp, ghi lại những khoảnh khắc đáng nhớ cùng bạn bè.  Với mức giá hợp lý, Trà Chanh 1996 sẽ là lựa chọn tuyệt vời cho các buổi hẹn hò, tụ tập, hay đơn giản là một nơi để bạn F5 bản thân sau những giờ học căng thẳng. Hãy ghé Trà Chanh 1996 ngay hôm nay để tận hưởng hương vị 'vị trà vị nhà' bạn nhé!"
     },
     {
       "id": 4,
       "name": "Trà chanh 96 - Vị trà vị nhà",
       "image": "/images/stores/hn.jpg",
+      "date": "2025-09-25",
       "description": "Một buổi chiều tan học, bạn tìm kiếm một góc nhỏ để thư giãn, trò chuyện cùng bạn bè? Chắc hẳn đó phải là một nơi yên bình nhưng không kém phần sôi động. Trà Chanh 1996 chính là điểm đến lý tưởng ấy. Bạn có thể tìm thấy tại đây những hương vị thân quen như Trà Chanh Truyền Thống, Trà Đào Cam Sả, hay Bạc Xỉu - những thức uống đã gắn liền với ký ức tuổi thơ. Ngoài ra, chúng mình còn có những món mới lạ như Trà Chanh Bưởi Hồng, Trà Dâu Tây, và Trà Sữa Olong, đảm bảo mỗi lần ghé đều có một vị ngon bất ngờ. Đến với Trà Chanh 1996, bạn không chỉ được thưởng thức những ly trà chanh chuẩn vị mà còn được trải nghiệm không gian đậm chất 'vintage', nơi bạn có thể chụp những bức ảnh đẹp, ghi lại những khoảnh khắc đáng nhớ cùng bạn bè.  Với mức giá hợp lý, Trà Chanh 1996 sẽ là lựa chọn tuyệt vời cho các buổi hẹn hò, tụ tập, hay đơn giản là một nơi để bạn F5 bản thân sau những giờ học căng thẳng. Hãy ghé Trà Chanh 1996 ngay hôm nay để tận hưởng hương vị 'vị trà vị nhà' bạn nhé!"
     },
     {
       "id": 2,
       "name": "Trà chanh 96 - Vị trà vị nhà",
       "image": "/images/stores/hn.jpg",
+      "date": "2025-09-25",
       "description": "Một buổi chiều tan học, bạn tìm kiếm một góc nhỏ để thư giãn, trò chuyện cùng bạn bè? Chắc hẳn đó phải là một nơi yên bình nhưng không kém phần sôi động. Trà Chanh 1996 chính là điểm đến lý tưởng ấy. Bạn có thể tìm thấy tại đây những hương vị thân quen như Trà Chanh Truyền Thống, Trà Đào Cam Sả, hay Bạc Xỉu - những thức uống đã gắn liền với ký ức tuổi thơ. Ngoài ra, chúng mình còn có những món mới lạ như Trà Chanh Bưởi Hồng, Trà Dâu Tây, và Trà Sữa Olong, đảm bảo mỗi lần ghé đều có một vị ngon bất ngờ. Đến với Trà Chanh 1996, bạn không chỉ được thưởng thức những ly trà chanh chuẩn vị mà còn được trải nghiệm không gian đậm chất 'vintage', nơi bạn có thể chụp những bức ảnh đẹp, ghi lại những khoảnh khắc đáng nhớ cùng bạn bè.  Với mức giá hợp lý, Trà Chanh 1996 sẽ là lựa chọn tuyệt vời cho các buổi hẹn hò, tụ tập, hay đơn giản là một nơi để bạn F5 bản thân sau những giờ học căng thẳng. Hãy ghé Trà Chanh 1996 ngay hôm nay để tận hưởng hương vị 'vị trà vị nhà' bạn nhé!"
     },
     {
       "id": 3,
       "name": "Trà chanh 96 - Vị trà vị nhà",
       "image": "/images/stores/hn.jpg",
+      "date": "2025-09-25",
       "description": "Một buổi chiều tan học, bạn tìm kiếm một góc nhỏ để thư giãn, trò chuyện cùng bạn bè? Chắc hẳn đó phải là một nơi yên bình nhưng không kém phần sôi động. Trà Chanh 1996 chính là điểm đến lý tưởng ấy. Bạn có thể tìm thấy tại đây những hương vị thân quen như Trà Chanh Truyền Thống, Trà Đào Cam Sả, hay Bạc Xỉu - những thức uống đã gắn liền với ký ức tuổi thơ. Ngoài ra, chúng mình còn có những món mới lạ như Trà Chanh Bưởi Hồng, Trà Dâu Tây, và Trà Sữa Olong, đảm bảo mỗi lần ghé đều có một vị ngon bất ngờ. Đến với Trà Chanh 1996, bạn không chỉ được thưởng thức những ly trà chanh chuẩn vị mà còn được trải nghiệm không gian đậm chất 'vintage', nơi bạn có thể chụp những bức ảnh đẹp, ghi lại những khoảnh khắc đáng nhớ cùng bạn bè.  Với mức giá hợp lý, Trà Chanh 1996 sẽ là lựa chọn tuyệt vời cho các buổi hẹn hò, tụ tập, hay đơn giản là một nơi để bạn F5 bản thân sau những giờ học căng thẳng. Hãy ghé Trà Chanh 1996 ngay hôm nay để tận hưởng hương vị 'vị trà vị nhà' bạn nhé!"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "phone": "0123456789",
+      "password": "123456",
+      "name": "Nguyễn Văn A",
+      "role": "user",
+      "token": "user-token-abc"
+    },
+    {
+      "id": 2,
+      "phone": "0987654321",
+      "password": "admin123",
+      "name": "Admin",
+      "role": "admin",
+      "token": "admin-token-xyz"
     }
   ]
 }

@@ -1,11 +1,11 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useProductStore } from '@/stores/apiStore' // <-- dùng store của bạn
+import { useApiStore } from '@/stores/apiStore' 
 import Button from '../Button.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const productStore = useProductStore()
+const productStore = useApiStore()
 const query = ref('')
 const showDropdown = ref(false)
 const searchBarRef = ref(null)

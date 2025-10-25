@@ -13,7 +13,7 @@ const props = defineProps({
 const emit = defineEmits(['click'])
 
 const classes = computed(() => {
-  const base = 'inline-flex items-center justify-center gap-2 font-medium transition duration-200 select-none'
+  const base = 'inline-flex gap-2 font-medium transition duration-200 select-none'
   const variants = {
     primary: 'bg-primary text-white hover:bg-primary_hover',
     secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-white',

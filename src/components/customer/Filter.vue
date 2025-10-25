@@ -1,9 +1,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useProductStore } from '@/stores/apiStore'
+import { useApiStore } from '@/stores/apiStore'
 
 const emit = defineEmits(['update:selected'])
-const store = useProductStore()
+const store = useApiStore()
 const selectedCategories = ref([])
 
 onMounted(async () => {

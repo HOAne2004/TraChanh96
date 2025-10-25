@@ -1,0 +1,17 @@
+<script setup>
+import { useUIStore } from '@/stores/ui'
+import Button from '@/components/Button.vue'
+
+const ui = useUIStore()
+</script>
+
+<template>
+  <Button
+    :icon="ui.isDark ? '🌙' : '🌞'"
+    variant="secondary"
+    size="sm"
+    class="p-2 rounded-full shadow-sm"
+    :aria-label="ui.isDark ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'"
+    @click="ui.toggleDark"
+  />
+</template>

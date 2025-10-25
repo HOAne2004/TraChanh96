@@ -1,20 +1,14 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-//import axios from 'axios'
+import { onMounted, computed } from 'vue'
+import { useApiStore } from '@/stores/apiStore'
 
-const info = ref([])
+const apiStore = useApiStore()
 
-// Giả lập gọi API khi người dùng vào website
 onMounted(async () => {
-  try {
-    // Ví dụ gọi API
-    const res = await fetch('http://localhost:3000/footerInfo')
-    const data = await res.json()
-    info.value = data
-  } catch (err) {
-    console.error('Không thể tải dữ liệu footer:', err)
-  }
+  await apiStore.fetchFooterInfo()
 })
+
+const info = computed(() => apiStore.footerInfo) 
 </script>
 
 <template>
@@ -48,7 +42,7 @@ onMounted(async () => {
 
     <!-- Social + đăng ký email -->
     <div class="text-left flex flex-col gap-4">
-      <ul class="max-h-32">
+      <ul class="max-h-32" v-if="info.facebook || info.zalo || info.tiktok">
         <p>Theo dõi chúng tôi trên</p>
         <ul class="flex justify-around h-8 lg:h-12 w-auto text-primary">
           <li v-if="info.facebook">
