@@ -1,17 +1,20 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useApiStore } from '@/stores/apiStore'
+import { useProductStore } from '@stores/productStore'
+import { useAppStore } from '@stores/appStore'
 import { storeToRefs } from 'pinia'
-import { useCartStore } from '@/stores/cartStore'
+import { useCartStore } from '@stores/cartStore'
 
-import Notification from '@/components/Notification.vue'
-import NavLink from '@/components/NavLink.vue'
-import TitledContainer from '@/components/customer/TitledContainer.vue'
+import Notification from '@common/Notification.vue'
+import NavLink from '@common/NavLink.vue'
+import TitledContainer from '@customer/TitledContainer.vue'
 
 const route = useRoute()
-const apiStore = useApiStore()
-const { products, toppings, sizes, sugarLevels, iceLevels, storePolicies } = storeToRefs(apiStore)
+const productStore = useProductStore()
+const appStore = useAppStore()
+const { products, toppings, sizes, sugarLevels, iceLevels } = storeToRefs(productStore)
+const { storePolicies } = storeToRefs(appStore)
 
 const isLoading = ref(true)
 const selectedSize = ref(null)
@@ -27,6 +30,20 @@ const product = computed(() => products.value.find((p) => p.id == productId.valu
 
 // Lấy chính sách cửa hàng đầu tiên (nếu có)
 const storePolicy = computed(() => storePolicies.value?.[0] || null)
+
+// Khi component được mount, đảm bảo dữ liệu đã có
+onMounted(async () => {
+  try {
+    await Promise.all([productStore.fetchProduct(), appStore.fetchStorePolicies()])
+
+    // Thiết lập lựa chọn mặc định sau khi data loaded
+    setDefaultSelections()
+  } catch (error) {
+    console.error('Lỗi khi tải dữ liệu:', error)
+  } finally {
+    isLoading.value = false
+  }
+})
 
 // Các nhóm size / đường / đá
 const sizeGroup = computed(() => {
@@ -79,27 +96,6 @@ const setDefaultSelections = () => {
   selectFullSugar()
   selectFullIce()
 }
-
-// Khi component được mount, đảm bảo dữ liệu đã có
-onMounted(async () => {
-  try {
-    await Promise.all([
-      products.value.length ? null : apiStore.fetchProducts(),
-      toppings.value.length ? null : apiStore.fetchToppings(),
-      sizes.value.length ? null : apiStore.fetchSizes(),
-      sugarLevels.value.length ? null : apiStore.fetchSugarLevels(),
-      iceLevels.value.length ? null : apiStore.fetchIceLevels(),
-      storePolicies.value.length ? null : apiStore.fetchStorePolicies?.(),
-    ])
-
-    // Thiết lập lựa chọn mặc định sau khi data loaded
-    setDefaultSelections()
-  } catch (error) {
-    console.error('Lỗi khi tải dữ liệu:', error)
-  } finally {
-    isLoading.value = false
-  }
-})
 
 // Watch để tự động chọn mặc định khi data thay đổi
 watch([sizeGroup, sugarGroup, iceGroup], () => {

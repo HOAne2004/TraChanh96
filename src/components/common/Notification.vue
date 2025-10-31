@@ -48,9 +48,6 @@ watch(
           <p class="text-sm font-medium text-gray-900 dark:text-white">
             {{ message }}
           </p>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Sản phẩm đã được thêm vào giỏ hàng
-          </p>
         </div>
         <button
           @click="visible = false"

@@ -1,18 +1,24 @@
-<!-- SectionContainer.vue -->
 <script setup>
+import NavLink from '@common/NavLink.vue'
+
 import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
 
 const props = defineProps({
   title: String,
   items: Array,
   controls: {
-    // ← thêm prop mới
     type: String,
-    default: '', // mặc định hiển thị
+    default: '',
+  },
+  linkTo: {
+    type: String,
+    default: '',
+  },
+  linkText: {
+    type: String,
+    default: 'Xem thêm',
   },
 })
-
-const emit = defineEmits(['load-more'])
 
 // ----- Scroll / Drag logic -----
 const scrollContainer = ref(null)
@@ -126,14 +132,8 @@ onUnmounted(() => {
       </template>
     </div>
 
-    <!-- Load more -->
     <div v-if="controls !== 'hidden'" class="mt-6 flex justify-center">
-      <button
-        class="px-4 p-2 mb-2 bg-primary text-white rounded-lg shadow hover:bg-primary/90 transition"
-        @click="$emit('load-more')"
-      >
-        Xem thêm
-      </button>
+      <NavLink :label="linkText" :to="linkTo" variant="primary"> </NavLink>
     </div>
   </div>
 </template>

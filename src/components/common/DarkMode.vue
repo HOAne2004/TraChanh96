@@ -1,6 +1,6 @@
 <script setup>
-import { useUIStore } from '@/stores/ui'
-import Button from '@/components/Button.vue'
+import { useUIStore } from '@/stores/uiStore'
+import Button from '@/components/common/Button.vue'
 
 const ui = useUIStore()
 </script>

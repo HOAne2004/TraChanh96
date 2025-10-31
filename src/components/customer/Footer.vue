@@ -1,14 +1,14 @@
 <script setup>
-import { onMounted, computed } from 'vue'
-import { useApiStore } from '@/stores/apiStore'
+import { onMounted } from 'vue'
+import { useAppStore } from '@/stores/appStore'
+import { storeToRefs } from 'pinia'
 
-const apiStore = useApiStore()
+const appStore = useAppStore()
+const { footerInfo } = storeToRefs(appStore)
 
 onMounted(async () => {
-  await apiStore.fetchFooterInfo()
+  await appStore.fetchFooterInfo()
 })
-
-const info = computed(() => apiStore.footerInfo) 
 </script>
 
 <template>
@@ -17,36 +17,36 @@ const info = computed(() => apiStore.footerInfo)
   >
     <!-- Logo -->
     <div class="w-full">
-      <img src="@images/logo-footer.png" alt="Logo" />
+      <img src="@logo/logo-footer.png" alt="Logo" />
     </div>
 
     <!-- Thông tin liên hệ -->
     <div class="text-left grid gap-1">
-      <ul v-if="info.address">
+      <ul v-if="footerInfo.address">
         <li class="font-bold text-primary">Địa chỉ</li>
-        <li>{{ info.address }}</li>
+        <li>{{ footerInfo.address }}</li>
       </ul>
-      <ul v-if="info.email">
+      <ul v-if="footerInfo.email">
         <li class="font-bold text-primary">Email hỗ trợ khách hàng</li>
-        <li>{{ info.email }}</li>
+        <li>{{ footerInfo.email }}</li>
       </ul>
-      <ul v-if="info.phone">
+      <ul v-if="footerInfo.phone">
         <li class="font-bold text-primary">Hotline hỗ trợ khách hàng</li>
-        <li>{{ info.phone }}</li>
+        <li>{{ footerInfo.phone }}</li>
       </ul>
-      <ul v-if="info.certificate">
+      <ul v-if="footerInfo.certificate">
         <li class="font-bold text-primary">Giấy chứng nhận</li>
-        <li>{{ info.certificate }}</li>
+        <li>{{ footerInfo.certificate }}</li>
       </ul>
     </div>
 
     <!-- Social + đăng ký email -->
     <div class="text-left flex flex-col gap-4">
-      <ul class="max-h-32" v-if="info.facebook || info.zalo || info.tiktok">
+      <ul class="max-h-32" v-if="footerInfo.facebook || footerInfo.zalo || footerInfo.tiktok">
         <p>Theo dõi chúng tôi trên</p>
         <ul class="flex justify-around h-8 lg:h-12 w-auto text-primary">
-          <li v-if="info.facebook">
-            <a :href="info.facebook" target="_blank" rel="noopener">
+          <li v-if="footerInfo.facebook">
+            <a :href="footerInfo.facebook" target="_blank" rel="noopener">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 x="0px"
@@ -62,8 +62,8 @@ const info = computed(() => apiStore.footerInfo)
               </svg>
             </a>
           </li>
-          <li v-if="info.zalo">
-            <a :href="info.zalo" target="_blank" rel="noopener">
+          <li v-if="footerInfo.zalo">
+            <a :href="footerInfo.zalo" target="_blank" rel="noopener">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 x="0px"
@@ -79,8 +79,8 @@ const info = computed(() => apiStore.footerInfo)
               </svg>
             </a>
           </li>
-          <li v-if="info.tiktok">
-            <a :href="info.tiktok" target="_blank" rel="noopener">
+          <li v-if="footerInfo.tiktok">
+            <a :href="footerInfo.tiktok" target="_blank" rel="noopener">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 x="0px"

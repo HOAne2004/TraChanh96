@@ -3,10 +3,10 @@ import { ref, onMounted, computed } from 'vue'
 import Filter from '@/components/customer/Filter.vue'
 import TitledContainer from '@/components/customer/TitledContainer.vue'
 import ProductCard from '@/components/customer/ProductCard.vue'
-import { useApiStore } from '@/stores/apiStore'
+import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
 
-const store = useApiStore()
+const store = useProductStore()
 // lấy refs từ store (tránh ref-in-ref)
 const { products: productsRef, categories: categoriesRef } = storeToRefs(store)
 
@@ -15,15 +15,10 @@ const isLoading = ref(true)
 
 onMounted(async () => {
   try {
-    // bắt buộc fetch (nếu muốn ép fetch lại, truyền true theo store nếu bạn hỗ trợ)
-    await Promise.all([store.fetchCategories(true), store.fetchProducts(true)])
+    await store.fetchProduct()
   } finally {
     isLoading.value = false
   }
-
-  // debug (tạm): bỏ hoặc comment khi đã ok
-  //console.log('products sample:', productsRef.value[0])
-  //console.log('categories sample:', categoriesRef.value[0])
 })
 
 /** computed unwrap .value trực tiếp để dùng trong template dễ dàng */

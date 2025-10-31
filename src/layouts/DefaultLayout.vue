@@ -1,6 +1,7 @@
 <script setup>
 import Footer from '@/components/customer/Footer.vue'
 import Header from '@/components/customer/Header.vue'
+import MobileMenuModal from '@/components/customer/MobileMenuModal.vue';
 </script>
 
 <template>
@@ -16,5 +17,6 @@ import Header from '@/components/customer/Header.vue'
 
     <!-- Footer -->
     <Footer class="mt-auto" />
+    <MobileMenuModal></MobileMenuModal>
   </div>
 </template>

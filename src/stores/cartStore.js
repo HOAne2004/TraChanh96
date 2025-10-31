@@ -1,11 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
-import axios from 'axios'
-
-const api = axios.create({
-  baseURL: 'http://localhost:3000',
-  timeout: 5000,
-})
+import cartApi from '@/api/cartApi' // 🚨 IMPORT CART API
 
 export const useCartStore = defineStore('cart', () => {
   // State
@@ -20,6 +15,7 @@ export const useCartStore = defineStore('cart', () => {
 
   const totalPrice = computed(() =>
     cartItems.value.reduce((sum, item) => {
+      // Giữ nguyên logic tính giá
       const basePrice = Number(item.price) || 0;
       const sizePrice = Number(item.sizePrice) || 0;
       const toppingPrice = Number(item.toppingPrice) || 0;
@@ -27,7 +23,7 @@ export const useCartStore = defineStore('cart', () => {
     }, 0)
   )
 
-  // Actions - Client Side
+  // Actions - Client Side (GIỮ NGUYÊN)
   function addToCart(item) {
     const existingItem = cartItems.value.find(
       (i) =>
@@ -41,6 +37,7 @@ export const useCartStore = defineStore('cart', () => {
     if (existingItem) {
       existingItem.quantity += item.quantity;
     } else {
+      // 🚨 Đảm bảo item mới có ID duy nhất (đã có ở ProductDetail.vue)
       cartItems.value.push(item);
     }
   }
@@ -60,22 +57,18 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
 
-  // Actions - API Calls
+  // 🚨 Actions - API Calls (Đã được đơn giản hóa để gọi API)
   const syncCartToServer = async (userId) => {
     if (!userId) return
-    
+
     loading.value = true
     error.value = null
-    
+
     try {
-      await api.post('/carts', {
-        userId,
-        items: cartItems.value,
-        updatedAt: new Date().toISOString()
-      })
+      // 🚨 GỌI API LAYER
+      await cartApi.syncCartToServer(userId, cartItems.value)
     } catch (err) {
-      error.value = err.message
-      console.error('Lỗi đồng bộ giỏ hàng:', err)
+      error.value = err.message // Lưu lỗi vào State
     } finally {
       loading.value = false
     }
@@ -83,24 +76,24 @@ export const useCartStore = defineStore('cart', () => {
 
   const loadCartFromServer = async (userId) => {
     if (!userId) return
-    
+
     loading.value = true
     error.value = null
-    
+
     try {
-      const { data } = await api.get(`/carts?userId=${userId}`)
-      if (data.length > 0) {
-        cartItems.value = data[0].items || []
+      // 🚨 GỌI API LAYER VÀ CẬP NHẬT STATE
+      const items = await cartApi.loadCartFromServer(userId)
+      if (items) {
+        cartItems.value = items
       }
     } catch (err) {
-      error.value = err.message
-      console.error('Lỗi tải giỏ hàng:', err)
+      error.value = err.message // Lưu lỗi vào State
     } finally {
       loading.value = false
     }
   }
 
-  // Watch
+  // Watch (GIỮ NGUYÊN) - Đồng bộ với LocalStorage
   watch(cartItems, (val) => {
     localStorage.setItem('cart', JSON.stringify(val))
   }, { deep: true })

@@ -1,31 +1,67 @@
 <script setup>
 import { useCartStore } from '@/stores/cartStore'
-import { ref } from 'vue'
-import Notification from '../Notification.vue'
+import { useProductStore } from '@/stores/productStore' // 🚨 IMPORT Product Store
+import { storeToRefs } from 'pinia'
+import { ref, onMounted, computed } from 'vue'
+import Notification from '@/components/common/Notification.vue' // Sửa alias
 
 const props = defineProps({
   product: { type: Object, required: true },
 })
 
 const cartStore = useCartStore()
+const productStore = useProductStore() // 🚨 Khởi tạo Product Store
+
+const { sizes, sugarLevels, iceLevels } = storeToRefs(productStore) // Lấy options
+
 const showNotification = ref(false)
 const quantity = ref(1)
 
+// 🚨 Tính toán các giá trị mặc định một cách động
+const defaultSize = computed(() => {
+  // Tìm size có extraPrice thấp nhất (Giả sử là size mặc định)
+  const sizeGroup = sizes.value[0]?.sizes || []
+  return sizeGroup.find((s) => s.extraPrice === 0) || { label: 'Nhỏ', extraPrice: 0 }
+})
+
+const defaultSugar = computed(() => {
+  // Mức 100% là mặc định
+  const sugarGroup = sugarLevels.value[0]?.levels || []
+  return sugarGroup.find((s) => s.value === 100) || { label: '100%', value: 100 }
+})
+
+const defaultIce = computed(() => {
+  // Mức 100% là mặc định
+  const iceGroup = iceLevels.value[0]?.levels || []
+  return iceGroup.find((i) => i.value === 100) || { label: '100%', value: 100 }
+})
+
+onMounted(async () => {
+  // 🚨 Đảm bảo các options đã được tải
+  // (Mặc dù ProductDetail/HomeView đã gọi, gọi lại ở đây để đảm bảo tính độc lập)
+  await productStore.fetchProduct()
+})
+
 const addToCart = () => {
-  // Tạo item với cấu trúc giống với ProductDetail
+  // Tạo item với cấu trúc mặc định động
   const itemToAdd = {
     id: Date.now(), // ID duy nhất cho mỗi lần thêm
-    productId: props.product.id, // Giữ productId để so sánh
+    productId: props.product.id,
     name: props.product.name,
-    price: props.product.price,
+    // 🚨 Đảm bảo price là số
+    price: Number(props.product.price),
     image: props.product.image,
     quantity: quantity.value,
-    size: 'Nhỏ',
-    sugar: '100%', 
-    ice: '100%',
+
+    // 🚨 GÁN GIÁ TRỊ MẶC ĐỊNH ĐỘNG
+    size: defaultSize.value.label,
+    sugar: defaultSugar.value.label,
+    ice: defaultIce.value.label,
+    sizePrice: defaultSize.value.extraPrice,
+
+    // Mặc định không có topping
     toppings: [],
-    sizePrice: 0,
-    toppingPrice: 0
+    toppingPrice: 0,
   }
 
   console.log('🟢 Thêm từ ProductCard:', itemToAdd)
@@ -44,6 +80,7 @@ const addToCart = () => {
   >
     <router-link :to="`/products/${product.id}`" class="block">
       <!-- Hình ảnh -->
+
       <div class="flex justify-center items-center h-40 mb-4">
         <img
           :src="product.image"
@@ -52,6 +89,7 @@ const addToCart = () => {
       </div>
 
       <!-- Tên sản phẩm -->
+
       <div class="min-h-[3.5rem] flex items-center mb-4">
         <h3 class="font-semibold text-gray-800 dark:text-white text-center line-clamp-2">
           {{ product.name }}
@@ -59,10 +97,13 @@ const addToCart = () => {
       </div>
 
       <!-- Giá + đánh giá -->
+
       <div class="flex items-center justify-between mb-4">
         <p class="font-bold text-primary text-lg">{{ product.price.toLocaleString() }}đ</p>
+
         <div class="flex items-center gap-1 bg-orange-100 px-2 py-1 rounded-full">
           <span class="font-semibold text-orange-600 text-lg">{{ product.rating }}</span>
+
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
@@ -82,8 +123,9 @@ const addToCart = () => {
         </div>
       </div>
     </router-link>
-    
+
     <!-- Nút giỏ hàng -->
+
     <div class="flex justify-center mt-auto">
       <button
         @click="addToCart"
@@ -114,11 +156,12 @@ const addToCart = () => {
       </button>
     </div>
   </div>
-  
+
   <Notification :show="showNotification" :message="`Đã thêm ${product?.name} vào giỏ hàng`" />
 </template>
 
 <style scoped>
+/* CSS giữ nguyên */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;

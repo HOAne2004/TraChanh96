@@ -1,25 +1,26 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useAppStore } from '@/stores/appStore' 
+import { storeToRefs } from 'pinia'
 
-const slides = ref([])
+const appStore = useAppStore()
 const currentIndex = ref(0)
 let intervalId
 
-// Lấy dữ liệu từ API json-server
-onMounted(async () => {
-  const res = await fetch("http://localhost:3000/carousel")
-  const data = await res.json()
-  slides.value = data
+const {carousel: slides} = storeToRefs(appStore)
 
-  // Bắt đầu auto chạy nếu có dữ liệu
-  if (slides.value.length > 0) {
-    intervalId = setInterval(() => {
-      currentIndex.value = (currentIndex.value + 1) % slides.value.length
-    }, 3500)
-  }
+onMounted(async() => {
+  await appStore.fetchCarousel()
+
+  if(slides.value.length > 0){
+  intervalId = setInterval(() =>{
+    currentIndex.value = (currentIndex.value + 1) % slides.value.length
+  }, 3500)
+}
 })
 
-onUnmounted(() => {
+
+onUnmounted(() =>{
   clearInterval(intervalId)
 })
 </script>

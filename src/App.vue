@@ -1,10 +1,10 @@
 <script setup>
 import { onMounted } from 'vue'
-import { useUIStore } from '@/stores/ui'
+import { useUIStore } from '@/stores/uiStore'
 import LoginModal from '@/components/auth/LoginModal.vue'
 
 const ui = useUIStore()
-onMounted (() => ui.initTheme)
+onMounted(() => ui.initTheme)
 </script>
 
 <template>

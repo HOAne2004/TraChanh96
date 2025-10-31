@@ -13,8 +13,12 @@ export default defineConfig({
       '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
       '@assets': fileURLToPath(new URL('./src/assets', import.meta.url)),
       '@images': fileURLToPath(new URL('./public/images', import.meta.url)),
+      '@logo': fileURLToPath(new URL('./src/assets/logo', import.meta.url)),
       '@customer': fileURLToPath(new URL('./src/components/customer', import.meta.url)),
       '@admin': fileURLToPath(new URL('./src/components/admin', import.meta.url)),
+      '@common': fileURLToPath(new URL('./src/components/common', import.meta.url)),
+      '@stores': fileURLToPath(new URL('./src/stores', import.meta.url)),
+      '@auth': fileURLToPath(new URL('./src/components/auth', import.meta.url)),
     },
   },
 })

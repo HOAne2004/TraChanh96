@@ -1,16 +1,16 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useApiStore } from '@/stores/apiStore'
+import { useProductStore } from '@/stores/productStore' 
 
 const emit = defineEmits(['update:selected'])
-const store = useApiStore()
+const productStore = useProductStore()
 const selectedCategories = ref([])
 
 onMounted(async () => {
-  await store.fetchCategories()
+  await productStore.fetchProduct()
 })
 
-const categories = computed(() => store.categories)
+const categories = computed(() => productStore.categories)
 
 const toggleCategory = (id) => {
   id = String(id)
