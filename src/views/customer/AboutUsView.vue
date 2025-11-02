@@ -1,12 +1,12 @@
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useStoreStore } from '@/stores/storeStore'
 import { useAppStore } from '@/stores/appStore'
 import { storeToRefs } from 'pinia'
 
 // Components
-import TitledContainer from '@/components/customer/TitledContainer.vue'
 import StoreCard from '@/components/customer/StoreCard.vue'
+import Button from '@/components/common/Button.vue'
 
 const storeStore = useStoreStore()
 const appStore = useAppStore()
@@ -17,11 +17,16 @@ const { appConfig } = storeToRefs(appStore)
 
 onMounted(async () => {
   // Tải tất cả dữ liệu cần thiết
-  await Promise.all([
-    storeStore.fetchStores(),
-    appStore.fetchAppConfig(), // 🚨 Tải App Config
-  ])
+  await Promise.all([storeStore.fetchStores(), appStore.fetchAppConfig()])
 })
+//Check dữ liệu gọi từ API
+// watch(
+//   [appConfig],
+//   () => {
+//     console.log('AppConfig:', appConfig.value)
+//   },
+//   { deep: true },
+// )
 
 // ----- LOGIC SẮP XẾP DỰA TRÊN THỜI GIAN KHAI TRƯƠNG (openDate) -----
 
@@ -53,22 +58,41 @@ const yearlyHistory = computed(() => {
 })
 
 // 2. Cột mốc quan trọng (3 cửa hàng đầu tiên tại 3 khu vực/mốc thời gian quan trọng)
+const sortedStores = computed(() => {
+  return [...stores.value].sort((a, b) => new Date(b.openDate) - new Date(a.openDate))
+})
 const milestones = computed(() => {
-  if (!stores.value.length) return []
-
-  // 🚨 Ví dụ: Lấy 3 cửa hàng đầu tiên (mở sớm nhất)
-  const sortedStores = [...stores.value].sort((a, b) => new Date(a.openDate) - new Date(b.openDate))
-
-  // Giả lập 3 cột mốc quan trọng
-  return sortedStores.slice(0, 3).map((store) => ({
+  if (!stores.value.length) return [] // 🚨 KHẮC PHỤC: Sử dụng sortedStores.value
+  // Giả lập 3 cửa hàng mới nhất làm cột mốc
+  return sortedStores.value.slice(0, 3).map((store) => ({
     date: new Date(store.openDate).toLocaleDateString('vi-VN'),
-    title: `Khai trương cửa hàng đầu tiên: ${store.name}`,
+    title: `Khai trương cửa hàng: ${store.name}`,
     address: store.address,
   }))
 })
 
-// 3. Hệ thống cửa hàng (Lấy 4 cửa hàng mới nhất để hiển thị mẫu)
-const latestStores = computed(() => stores.value.slice(0, 4))
+// 3. Hệ thống cửa hàng
+// 🚨 BƯỚC MỚI: State quản lý số lượng cửa hàng hiển thị
+const INITIAL_COUNT = 3 // Số bài hiển thị ban đầu
+const itemsToShow = ref(INITIAL_COUNT) // State hiện tại
+const visibleStore = computed(() => sortedStores.value.slice(0, itemsToShow.value))
+// ----- LOGIC ĐIỀU KHIỂN XEM THÊM -----
+const totalAvailable = computed(() => stores.value.length)
+
+const hasMore = computed(() => visibleStore.value.length < totalAvailable.value)
+
+const loadMore = () => {
+  const remainingCount = totalAvailable.value - visibleStore.value.length
+  const itemsToAdd = Math.min(3, remainingCount) // Số cửa hàng hiển thị thêm
+  itemsToShow.value += itemsToAdd
+}
+
+// Hành động Ẩn bớt: Quay về số lượng ban đầu
+const showLess = () => {
+  itemsToShow.value = INITIAL_COUNT
+  // Cuộn lên đầu trang (UX tốt)
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 </script>
 
 <template>
@@ -83,7 +107,7 @@ const latestStores = computed(() => stores.value.slice(0, 4))
         />
       </div>
       <p class="text-gray-700 dark:text-gray-300 leading-relaxed text-center">
-        {{ appConfig.brandStory || 'Chúng tôi cam kết mang đến những trải nghiệm tốt nhất...' }}
+        {{ appConfig?.brandStory || 'Chúng tôi cam kết mang đến những trải nghiệm tốt nhất...' }}
       </p>
     </section>
 
@@ -133,15 +157,31 @@ const latestStores = computed(() => stores.value.slice(0, 4))
 
     <section class="max-w-6xl mx-auto text-center my-8">
       <h2 class="text-4xl font-extrabold text-green-700 dark:text-green-400">
-        {{ appConfig.chainCount || '30' }}+ Chuỗi cửa hàng trên toàn quốc
+        {{ appConfig?.chainCount || '30' }}+ Chuỗi cửa hàng trên toàn quốc
       </h2>
-      <p class="text-gray-500 mt-2">{{ appConfig.chainCountNote || 'Liên tục mở rộng...' }}</p>
+      <p class="text-gray-500 mt-2">{{ appConfig?.chainCountNote || 'Liên tục mở rộng...' }}</p>
     </section>
 
-    <TitledContainer title="Hệ thống cửa hàng" linkTo="/stores" linkText="Xem tất cả">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <StoreCard v-for="s in latestStores" :key="s.id" :store="s" />
+    <!-- Thử nghiệm -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold mb-6 border-b pb-2 text-green-700 dark:text-green-400 dark:border-gray-700">Hệ thống cửa hàng</h2>
+
+      <div v-if="visibleStore?.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <StoreCard v-for="store in visibleStore" :key="store.id" :store="store" />
       </div>
-    </TitledContainer>
+
+      <div v-else class="text-center py-10 text-gray-500">Đang tải dữ liệu...</div>
+    </section>
+
+    <div v-if="totalAvailable > INITIAL_COUNT" class="mt-10 flex justify-center space-x-4">
+      <Button
+        v-if="itemsToShow > INITIAL_COUNT"
+        @click="showLess"
+        label="Ẩn bớt"
+        variant="secondary"
+      />
+
+      <Button v-if="hasMore" @click="loadMore" label="Xem thêm" variant="primary" />
+    </div>
   </main>
 </template>

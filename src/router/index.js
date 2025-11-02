@@ -6,6 +6,7 @@ import AdminLayout from '@/layouts/AdminLayout.vue'
 
 // User
 import HomeView from '@/views/customer/HomeView.vue'
+import OrderDetailView from '@/views/customer/OrderDetailView.vue'
 
 const ProductsView = () => import('@/views/customer/ProductsView.vue') //lazy load
 const AboutUsView = () => import('@/views/customer/AboutUsView.vue')
@@ -13,7 +14,8 @@ const NewsView = () => import('@/views/customer/NewsView.vue')
 const CartView = () => import('@/views/customer/CartView.vue')
 const RegisterView = () => import('@/views/customer/RegisterView.vue')
 const ForgotPasswordView = () => import('@/views/customer/ForgotPasswordView.vue')
-
+const CheckoutView = () => import('@/views/customer/CheckoutView.vue')
+const OrderHistoryView = () => import('@/views/customer/OrderHistoryView.vue')
 // Admin
 const AdminDashboard = () => import('@/views/admin/Dashboard.vue')
 
@@ -39,9 +41,25 @@ const routes = [
         component: () => import('@/views/customer/StoreDetailView.vue'),
         props: true,
       },
-      
+
       { path: 'cart', name: 'cart', component: CartView },
       { path: 'news', name: 'news', component: NewsView },
+      {
+        path: 'news/:id',
+        name: 'news-detail',
+        component: () => import('@/views/customer/NewsDetailView.vue'),
+        props: true,
+      },
+
+      { path: 'checkout', name: 'checkout', component: CheckoutView },
+
+      { path: 'orders', name: 'orders', component: OrderHistoryView },
+      {
+        path: '/orders/:id',
+        name: 'OrderDetail',
+        component: () => import('@/views/customer/OrderDetailView.vue'),
+        props: true,
+      },
 
       // 🚨 ROUTES XÁC THỰC MỚI
       { path: 'register', name: 'register', component: RegisterView }, // Đăng ký

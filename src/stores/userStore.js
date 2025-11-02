@@ -2,8 +2,10 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import authApi from '@/api/authApi'
+import cartApi from '@/api/cartApi'
 import router from '@/router'
-import { useCartStore } from './cartStore' // Import để xử lý giỏ hàng
+import { useCartStore } from './cartStore'
+import { useModalStore } from './modalStore'
 
 export const useUserStore = defineStore('user', () => {
   // 🧩 STATE
@@ -38,18 +40,42 @@ export const useUserStore = defineStore('user', () => {
     loading.value = true
     error.value = null
     try {
+      // 1. GỌI API LOGIN VÀ LƯU USER DATA
       const userData = await authApi.login(phone, password)
 
-      // 🚨 BƯỚC MỚI: TẢI GIỎ HÀNG SAU KHI ĐĂNG NHẬP
       const cartStore = useCartStore()
-      await cartStore.loadCartFromServer(userData.id) // Tải giỏ hàng của User
+      const modalStore = useModalStore() // 🚨 TẠO INSTANCE MODAL STORE
 
-      setAuthData(userData) // Lưu user và token
+      const guestItems = [...cartStore.cartItems]
 
-      // Điều hướng theo vai trò
+      // 2. TẢI GIỎ HÀNG USER TỪ SERVER (Giỏ hàng hiện tại = Giỏ hàng Server)
+      await cartStore.loadCartFromServer(userData.id)
+
+      // 3. HỢP NHẤT: Thêm Guest Items vào Cart đã tải từ Server
+      let mergedCount = 0
+      guestItems.forEach((item) => {
+        // addToCart sẽ tự động cộng dồn số lượng nếu trùng
+        cartStore.addToCart(item)
+        mergedCount++
+      })
+
+      // 4. ĐỒNG BỘ: Lưu Giỏ hàng đã hợp nhất lên Server
+      await cartStore.syncCartToServer(userData.id)
+
+      // 🚨 BƯỚC KHẮC PHỤC 5: GỬI THÔNG BÁO CHO NGƯỜI DÙNG
+      if (mergedCount > 0) {
+        const userName = userData.name || userData.phone || 'bạn'
+        const message = `Chào ${userName}! Giỏ hàng đã được hợp nhất thành công (${mergedCount} sản phẩm mới).`
+        modalStore.showToast(message, 'success', 5000) // Hiển thị 5 giây
+      }
+
+      // 6. LƯU AUTH DATA VÀ ĐIỀU HƯỚNG
+      setAuthData(userData)
       if (userData.role === 'admin') {
         router.push('/admin')
-      } 
+      } else {
+        router.push('/') // hoặc router.go(-1)
+      }
     } catch (err) {
       error.value = err.message || 'Đăng nhập thất bại'
       throw err

@@ -18,7 +18,7 @@ const classes = computed(() => {
   const variants = {
     primary: 'bg-green-600 text-white hover:bg-green-700', // Sửa ví dụ màu primary
     secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-white',
-    outline: 'border border-green-600 text-green-600 hover:bg-green-600 hover:text-white', // Sửa ví dụ màu outline
+    outline: 'border border-green-600 text-green-600 p-2 rounded-full hover:bg-green-200 transition-colors duration-200', 
     danger: 'bg-red-500 text-white hover:bg-red-600',
     faded: 'bg-gray-300 dark:bg-gray-700 text-dark dark:text-white px-4 py-2 rounded hover:bg-gray-400 dark:hover:bg-gray-400',
   }

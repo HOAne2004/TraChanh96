@@ -15,7 +15,11 @@
       "policyName": "Chính sách giao hàng mặc định",
       "prepareTime": "15–20 phút",
       "deliveryRadius": "10km quanh Đại học Công nghiệp",
-      "deliveryAreas": ["Bắc Từ Liêm", "Cầu Giấy", "Nam Từ Liêm"],
+      "deliveryAreas": [
+        "Bắc Từ Liêm",
+        "Cầu Giấy",
+        "Nam Từ Liêm"
+      ],
       "deliveryTimeEstimate": "30–45 phút",
       "deliveryFee": 15000,
       "freeShipThreshold": 200000,
@@ -62,7 +66,11 @@
       "categoryId": 1,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "2",
@@ -76,7 +84,11 @@
       "categoryId": 2,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "3",
@@ -90,7 +102,11 @@
       "categoryId": 1,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "4",
@@ -104,7 +120,11 @@
       "categoryId": 1,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "5",
@@ -118,7 +138,11 @@
       "categoryId": 4,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "6",
@@ -132,7 +156,11 @@
       "categoryId": 3,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "7",
@@ -146,7 +174,11 @@
       "categoryId": 3,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "8",
@@ -160,7 +192,11 @@
       "categoryId": 5,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "9",
@@ -174,7 +210,11 @@
       "categoryId": 5,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "10",
@@ -188,7 +228,11 @@
       "categoryId": 6,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "11",
@@ -202,7 +246,11 @@
       "categoryId": 6,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "12",
@@ -216,7 +264,11 @@
       "categoryId": 1,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "13",
@@ -230,7 +282,11 @@
       "categoryId": 7,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "14",
@@ -244,7 +300,11 @@
       "categoryId": 7,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "15",
@@ -258,7 +318,11 @@
       "categoryId": 8,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "16",
@@ -272,7 +336,11 @@
       "categoryId": 8,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     },
     {
       "id": "17",
@@ -286,7 +354,11 @@
       "categoryId": 9,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [1, 2, 3]
+      "toppingIds": [
+        1,
+        2,
+        3
+      ]
     }
   ],
   "categories": [
@@ -418,6 +490,8 @@
       "name": "Cửa hàng Hà Đông",
       "address": "Số 65 Phạm Ngọc Thạch, Đống Đa, Hà Nội",
       "image": "/images/stores/hn.jpg",
+      "openTime": "8:00 - 22:00",
+      "branchPhone": "0123456789",
       "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021...",
       "openDate": "2025-09-25"
     },
@@ -426,6 +500,8 @@
       "name": "Cửa hàng Đống Đa",
       "address": "Số 65 Phạm Ngọc Thạch, Đống Đa, Hà Nội",
       "image": "/images/stores/hn.jpg",
+      "openTime": "8:00 - 22:00",
+      "branchPhone": "0123456789",
       "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021...",
       "openDate": "2025-09-25"
     },
@@ -434,6 +510,8 @@
       "name": "Cửa hàng Tân Lập",
       "address": "Số 65 Phạm Ngọc Thạch, Đống Đa, Hà Nội",
       "image": "/images/stores/hn.jpg",
+      "openTime": "8:00 - 22:00",
+      "branchPhone": "0123456789",
       "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021...",
       "openDate": "2025-09-25"
     },
@@ -442,6 +520,8 @@
       "name": "Cửa hàng Ninh Bình",
       "address": "Số 65 Phạm Ngọc Thạch, Đống Đa, Hà Nội",
       "image": "/images/stores/hn.jpg",
+      "openTime": "8:00 - 22:00",
+      "branchPhone": "0123456789",
       "description": "Phê La chính thức ra mắt thị trường với cửa hàng đầu tiên tại Phạm Ngọc Thạch vào tháng 03/2021...",
       "openDate": "2025-09-25"
     }
@@ -474,6 +554,41 @@
       "image": "/images/stores/hn.jpg",
       "date": "2025-09-25",
       "description": "Một buổi chiều tan học, bạn tìm kiếm một góc nhỏ để thư giãn, trò chuyện cùng bạn bè? Chắc hẳn đó phải là một nơi yên bình nhưng không kém phần sôi động. Trà Chanh 1996 chính là điểm đến lý tưởng ấy. Bạn có thể tìm thấy tại đây những hương vị thân quen như Trà Chanh Truyền Thống, Trà Đào Cam Sả, hay Bạc Xỉu - những thức uống đã gắn liền với ký ức tuổi thơ. Ngoài ra, chúng mình còn có những món mới lạ như Trà Chanh Bưởi Hồng, Trà Dâu Tây, và Trà Sữa Olong, đảm bảo mỗi lần ghé đều có một vị ngon bất ngờ. Đến với Trà Chanh 1996, bạn không chỉ được thưởng thức những ly trà chanh chuẩn vị mà còn được trải nghiệm không gian đậm chất 'vintage', nơi bạn có thể chụp những bức ảnh đẹp, ghi lại những khoảnh khắc đáng nhớ cùng bạn bè.  Với mức giá hợp lý, Trà Chanh 1996 sẽ là lựa chọn tuyệt vời cho các buổi hẹn hò, tụ tập, hay đơn giản là một nơi để bạn F5 bản thân sau những giờ học căng thẳng. Hãy ghé Trà Chanh 1996 ngay hôm nay để tận hưởng hương vị 'vị trà vị nhà' bạn nhé!"
+    },
+    {
+      "id": "5",
+      "name": "Trà chanh 96 - Vị trà vị nhà",
+      "image": "/images/stores/hn.jpg",
+      "date": "2025-09-25",
+      "description": "Một buổi chiều tan học, bạn tìm kiếm một góc nhỏ để thư giãn, trò chuyện cùng bạn bè? Chắc hẳn đó phải là một nơi yên bình nhưng không kém phần sôi động. Trà Chanh 1996 chính là điểm đến lý tưởng ấy. Bạn có thể tìm thấy tại đây những hương vị thân quen như Trà Chanh Truyền Thống, Trà Đào Cam Sả, hay Bạc Xỉu - những thức uống đã gắn liền với ký ức tuổi thơ. Ngoài ra, chúng mình còn có những món mới lạ như Trà Chanh Bưởi Hồng, Trà Dâu Tây, và Trà Sữa Olong, đảm bảo mỗi lần ghé đều có một vị ngon bất ngờ. Đến với Trà Chanh 1996, bạn không chỉ được thưởng thức những ly trà chanh chuẩn vị mà còn được trải nghiệm không gian đậm chất 'vintage', nơi bạn có thể chụp những bức ảnh đẹp, ghi lại những khoảnh khắc đáng nhớ cùng bạn bè.  Với mức giá hợp lý, Trà Chanh 1996 sẽ là lựa chọn tuyệt vời cho các buổi hẹn hò, tụ tập, hay đơn giản là một nơi để bạn F5 bản thân sau những giờ học căng thẳng. Hãy ghé Trà Chanh 1996 ngay hôm nay để tận hưởng hương vị 'vị trà vị nhà' bạn nhé!"
+    },
+    {
+      "id": "6",
+      "name": "Trà chanh 96 - Vị trà vị nhà",
+      "image": "/images/stores/hn.jpg",
+      "date": "2025-09-25",
+      "description": "Một buổi chiều tan học, bạn tìm kiếm một góc nhỏ để thư giãn, trò chuyện cùng bạn bè? Chắc hẳn đó phải là một nơi yên bình nhưng không kém phần sôi động. Trà Chanh 1996 chính là điểm đến lý tưởng ấy. Bạn có thể tìm thấy tại đây những hương vị thân quen như Trà Chanh Truyền Thống, Trà Đào Cam Sả, hay Bạc Xỉu - những thức uống đã gắn liền với ký ức tuổi thơ. Ngoài ra, chúng mình còn có những món mới lạ như Trà Chanh Bưởi Hồng, Trà Dâu Tây, và Trà Sữa Olong, đảm bảo mỗi lần ghé đều có một vị ngon bất ngờ. Đến với Trà Chanh 1996, bạn không chỉ được thưởng thức những ly trà chanh chuẩn vị mà còn được trải nghiệm không gian đậm chất 'vintage', nơi bạn có thể chụp những bức ảnh đẹp, ghi lại những khoảnh khắc đáng nhớ cùng bạn bè.  Với mức giá hợp lý, Trà Chanh 1996 sẽ là lựa chọn tuyệt vời cho các buổi hẹn hò, tụ tập, hay đơn giản là một nơi để bạn F5 bản thân sau những giờ học căng thẳng. Hãy ghé Trà Chanh 1996 ngay hôm nay để tận hưởng hương vị 'vị trà vị nhà' bạn nhé!"
+    },
+    {
+      "id": "7",
+      "name": "Trà chanh 96 - Vị trà vị nhà",
+      "image": "/images/stores/hn.jpg",
+      "date": "2025-09-25",
+      "description": "Một buổi chiều tan học, bạn tìm kiếm một góc nhỏ để thư giãn, trò chuyện cùng bạn bè? Chắc hẳn đó phải là một nơi yên bình nhưng không kém phần sôi động. Trà Chanh 1996 chính là điểm đến lý tưởng ấy. Bạn có thể tìm thấy tại đây những hương vị thân quen như Trà Chanh Truyền Thống, Trà Đào Cam Sả, hay Bạc Xỉu - những thức uống đã gắn liền với ký ức tuổi thơ. Ngoài ra, chúng mình còn có những món mới lạ như Trà Chanh Bưởi Hồng, Trà Dâu Tây, và Trà Sữa Olong, đảm bảo mỗi lần ghé đều có một vị ngon bất ngờ. Đến với Trà Chanh 1996, bạn không chỉ được thưởng thức những ly trà chanh chuẩn vị mà còn được trải nghiệm không gian đậm chất 'vintage', nơi bạn có thể chụp những bức ảnh đẹp, ghi lại những khoảnh khắc đáng nhớ cùng bạn bè.  Với mức giá hợp lý, Trà Chanh 1996 sẽ là lựa chọn tuyệt vời cho các buổi hẹn hò, tụ tập, hay đơn giản là một nơi để bạn F5 bản thân sau những giờ học căng thẳng. Hãy ghé Trà Chanh 1996 ngay hôm nay để tận hưởng hương vị 'vị trà vị nhà' bạn nhé!"
+    },
+    {
+      "id": "8",
+      "name": "Trà chanh 96 - Vị trà vị nhà",
+      "image": "/images/stores/hn.jpg",
+      "date": "2025-09-25",
+      "description": "Một buổi chiều tan học, bạn tìm kiếm một góc nhỏ để thư giãn, trò chuyện cùng bạn bè? Chắc hẳn đó phải là một nơi yên bình nhưng không kém phần sôi động. Trà Chanh 1996 chính là điểm đến lý tưởng ấy. Bạn có thể tìm thấy tại đây những hương vị thân quen như Trà Chanh Truyền Thống, Trà Đào Cam Sả, hay Bạc Xỉu - những thức uống đã gắn liền với ký ức tuổi thơ. Ngoài ra, chúng mình còn có những món mới lạ như Trà Chanh Bưởi Hồng, Trà Dâu Tây, và Trà Sữa Olong, đảm bảo mỗi lần ghé đều có một vị ngon bất ngờ. Đến với Trà Chanh 1996, bạn không chỉ được thưởng thức những ly trà chanh chuẩn vị mà còn được trải nghiệm không gian đậm chất 'vintage', nơi bạn có thể chụp những bức ảnh đẹp, ghi lại những khoảnh khắc đáng nhớ cùng bạn bè.  Với mức giá hợp lý, Trà Chanh 1996 sẽ là lựa chọn tuyệt vời cho các buổi hẹn hò, tụ tập, hay đơn giản là một nơi để bạn F5 bản thân sau những giờ học căng thẳng. Hãy ghé Trà Chanh 1996 ngay hôm nay để tận hưởng hương vị 'vị trà vị nhà' bạn nhé!"
+    },
+    {
+      "id": "9",
+      "name": "Trà chanh 96 - Vị trà vị nhà",
+      "image": "/images/stores/hn.jpg",
+      "date": "2025-09-25",
+      "description": "Một buổi chiều tan học, bạn tìm kiếm một góc nhỏ để thư giãn, trò chuyện cùng bạn bè? Chắc hẳn đó phải là một nơi yên bình nhưng không kém phần sôi động. Trà Chanh 1996 chính là điểm đến lý tưởng ấy. Bạn có thể tìm thấy tại đây những hương vị thân quen như Trà Chanh Truyền Thống, Trà Đào Cam Sả, hay Bạc Xỉu - những thức uống đã gắn liền với ký ức tuổi thơ. Ngoài ra, chúng mình còn có những món mới lạ như Trà Chanh Bưởi Hồng, Trà Dâu Tây, và Trà Sữa Olong, đảm bảo mỗi lần ghé đều có một vị ngon bất ngờ. Đến với Trà Chanh 1996, bạn không chỉ được thưởng thức những ly trà chanh chuẩn vị mà còn được trải nghiệm không gian đậm chất 'vintage', nơi bạn có thể chụp những bức ảnh đẹp, ghi lại những khoảnh khắc đáng nhớ cùng bạn bè.  Với mức giá hợp lý, Trà Chanh 1996 sẽ là lựa chọn tuyệt vời cho các buổi hẹn hò, tụ tập, hay đơn giản là một nơi để bạn F5 bản thân sau những giờ học căng thẳng. Hãy ghé Trà Chanh 1996 ngay hôm nay để tận hưởng hương vị 'vị trà vị nhà' bạn nhé!"
     }
   ],
   "users": [
@@ -494,7 +609,7 @@
       "token": "admin-token-xyz"
     },
     {
-      "id": 1761892820612,
+      "id": "1761892820612",
       "name": "Hoan",
       "phone": "01111111111",
       "password": "123456",
@@ -504,43 +619,56 @@
   ],
   "carts": [
     {
-      "id": 101,
+      "id": "101",
       "userId": 1,
       "items": [
         {
-          "id": 167888000101,
-          "productId": 1,
-          "name": "Trà chanh",
-          "price": 15000,
-          "image": "/images/products/tra-chanh.png",
-          "quantity": 2,
-          "size": "M",
-          "sizePrice": 5000,
-          "sugar": "70%",
-          "ice": "100%",
-          "toppings": [
-            { "id": 1, "name": "Chân châu đen", "price": 10000 },
-            { "id": 3, "name": "Nha đam", "price": 5000 }
-          ]
-        },
-        {
-          "id": 167888000102,
-          "productId": 6,
+          "id": 1762103582324,
+          "productId": "6",
           "name": "Trà sữa nướng trân châu đường đen",
           "price": 35000,
-          "image": "/images/products/tra-sua.png",
+          "image": "/images/products/dauDoSuaDua.png",
           "quantity": 1,
-          "size": "L",
-          "sizePrice": 8000,
+          "size": "S",
           "sugar": "100%",
-          "ice": "70%",
-          "toppings": []
+          "ice": "100%",
+          "sizePrice": 0,
+          "toppings": [],
+          "toppingPrice": 0
+        },
+        {
+          "id": 1762103924875,
+          "productId": "12",
+          "name": "Trà đào cam sả",
+          "price": 35000,
+          "image": "/images/products/dauDoSuaDua.png",
+          "quantity": 1,
+          "size": "S",
+          "sugar": "100%",
+          "ice": "100%",
+          "sizePrice": 0,
+          "toppings": [],
+          "toppingPrice": 0
+        },
+        {
+          "id": 1762103932825,
+          "productId": "11",
+          "name": "Cà phê đen đá",
+          "price": 28000,
+          "image": "/images/products/dauDoSuaDua.png",
+          "quantity": 1,
+          "size": "S",
+          "sugar": "100%",
+          "ice": "100%",
+          "sizePrice": 0,
+          "toppings": [],
+          "toppingPrice": 0
         }
       ],
-      "updatedAt": "2025-10-31T08:00:00Z"
+      "updatedAt": "2025-11-02T19:12:35.952Z"
     },
     {
-      "id": 102,
+      "id": "102",
       "userId": 1,
       "items": [
         {
@@ -558,11 +686,18 @@
         }
       ],
       "updatedAt": "2025-10-31T08:00:00Z"
+    },
+    {
+      "id": "55e5",
+      "userId": "2",
+      "items": [],
+      "updatedAt": "2025-11-02T14:20:19.527Z"
     }
   ],
   "appConfig": {
     "chainCount": 35,
     "chainCountNote": "Chuỗi cửa hàng trên toàn quốc",
     "brandStory": "Tên thương hiệu và triết lý kinh doanh của chúng tôi là..."
-  }
+  },
+  "orders": []
 }

@@ -4,189 +4,100 @@ import { computed, onMounted } from 'vue'
 import { useCartStore } from '@/stores/cartStore'
 import { useAppStore } from '@/stores/appStore'
 import { storeToRefs } from 'pinia'
-// 🚨 Lưu ý: Cần thêm import RouterLink nếu muốn dùng trong script
-import { RouterLink } from 'vue-router'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/userStore'
+import { useModalStore } from '@/stores/modalStore'
 
-// Đảm bảo đường dẫn này đúng với vị trí file của bạn
-import emptyCartImage from '@/assets/others/empty-cart.png'
+// Components mới
+import CartItemList from '@/components/customer/cart/CartItemList.vue'
+import CartSummaryPanel from '@/components/customer/cart/CartSummaryPanel.vue'
+
+// Import ảnh cho trạng thái giỏ hàng trống (cần đảm bảo đường dẫn đúng)
+import emptyCartImage from '@/assets/others/empty-cart.png' 
 
 const appStore = useAppStore()
 const cartStore = useCartStore()
+const userStore = useUserStore()
+const modalStore = useModalStore()
+const router = useRouter()
 
-// totalPrice là computed từ Store, nó đã an toàn (number)
+// Lấy refs từ Stores
 const { cartItems, totalPrice } = storeToRefs(cartStore)
 const { storePolicies } = storeToRefs(appStore)
+const { isLoggedIn } = storeToRefs(userStore)
 
 onMounted(async () => {
+  // Đảm bảo lấy phí ship từ App Store
+  // Cân nhắc gọi fetchAppConfig() ở main.js hoặc DefaultLayout để đảm bảo dữ liệu này luôn sẵn sàng
   await appStore.fetchStorePolicies()
 })
 
-// Format tiền (Giữ nguyên)
-const formatCurrency = (val) =>
-  new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val)
-
-// Tính giá an toàn cho mỗi item (Giữ nguyên - Rất cần thiết!)
-const getItemPrice = (item) => {
-  try {
-    const basePrice = Number(item.price) || 0
-    const sizePrice = Number(item.sizePrice) || 0
-    // Đảm bảo toppingPrice cũng được tính toán an toàn
-    const toppingPrice = Array.isArray(item.toppings)
-      ? item.toppings.reduce((sum, t) => sum + (Number(t.price) || 0), 0)
-      : 0
-
-    // 🚨 Ép kiểu toàn bộ kết quả về Number để tránh lỗi NaN khi hiển thị
-    return Number((basePrice + sizePrice + toppingPrice) * item.quantity)
-  } catch (error) {
-    console.error('Lỗi tính giá:', error, item)
-    return 0
-  }
-}
-
-// Hiển thị toppings an toàn (Giữ nguyên)
-const getToppingsDisplay = (toppings) => {
-  if (!toppings || !Array.isArray(toppings) || toppings.length === 0) {
-    return ''
-  }
-  return toppings.map((t) => t.name || '').join(', ')
-}
-
-// Kiểm tra item có options không (Giữ nguyên)
-const hasOptions = (item) => {
-  return item.size || item.sugar || item.ice || (item.toppings && item.toppings.length > 0)
-}
-
-// Tổng cộng
+// Tính phí giao hàng
 const shippingFee = computed(() => {
   if (cartItems.value.length === 0) {
     return 0
   }
-  // Đảm bảo giá trị lấy ra là số, nếu không có thì là 0
+  // Lấy phí giao hàng từ chính sách (giả định policy đầu tiên)
   return Number(storePolicies.value?.[0]?.deliveryFee) || 0
 })
 
-// 🚨 Tối ưu hóa: Gọi totalPrice trực tiếp
 const subtotal = computed(() => Number(totalPrice.value))
+const total = computed(() => subtotal.value + shippingFee.value)
+const hasItems = computed(() => cartItems.value.length > 0)
 
-// 🚨 Tối ưu hóa: Total luôn là số
-const total = computed(() => Number(subtotal.value) + Number(shippingFee.value))
-
-// Thanh toán (Giữ nguyên)
+// 🚨 LOGIC THANH TOÁN ĐÃ TỐI ƯU
 const checkout = () => {
-  if (cartItems.value.length === 0) {
-    alert('Giỏ hàng của bạn đang trống!')
+  if (!hasItems.value) return
+
+  if (!isLoggedIn.value) {
+    // 1. Mở modal Login
+    modalStore.openLoginModal()
+    
+    // 2. 🚨 Dùng Toast/Notification thay cho alert
+    modalStore.showToast('Vui lòng đăng nhập trước khi thanh toán!', 'info', 4000)
     return
   }
-  alert('Chuyển đến trang thanh toán!')
+  
+  // 3. Chuyển sang trang Checkout nếu đã đăng nhập
+  router.push('/checkout')
 }
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-    <div class="md:col-span-2 space-y-4">
-      <div class="flex justify-between">
-        <h2 class="text-2xl font-semibold mb-4 dark:text-green-500">Giỏ hàng của bạn</h2>
-        <button
-          v-if="cartItems.length"
-          @click="cartStore.clearCart()"
-          class="text-md font-medium text-red-500 hover:underline"
-        >
-          Clear All
-        </button>
-      </div>
-      <div
-        v-for="item in cartItems"
-        :key="item.id"
-        class="flex items-center gap-4 p-4 bg-white rounded-2xl shadow dark:bg-gray-600"
-      >
-        <router-link :to="`/products/${item.productId}`">
-          <img
-            :src="item.image"
-            title="Xem chi tiết"
-            :alt="item.name"
-            class="w-24 h-24 object-cover rounded-xl"
-          />
-        </router-link>
-        <div class="flex-1">
-          <h3 class="font-semibold text-lg">{{ item.name }}</h3>
-
-          <div v-if="hasOptions(item)" class="text-sm text-gray-500 space-y-1 dark:text-green-200">
-            <p v-if="item.size">Size: {{ item.size }}</p>
-            <p v-if="item.sugar">Đường: {{ item.sugar }}</p>
-            <p v-if="item.ice">Đá: {{ item.ice }}</p>
-            <p v-if="item.toppings && item.toppings.length > 0">
-              Topping: {{ getToppingsDisplay(item.toppings) }}
-            </p>
-          </div>
-
-          <div class="flex items-center gap-3 mt-2">
-            <button
-              @click="cartStore.updateQuantity(item.id, item.quantity - 1)"
-              class="px-2 py-1 border rounded hover:bg-gray-100"
-            >
-              -
-            </button>
-            <span class="font-medium">{{ item.quantity }}</span>
-            <button
-              @click="cartStore.updateQuantity(item.id, item.quantity + 1)"
-              class="px-2 py-1 border rounded hover:bg-gray-100"
-            >
-              +
-            </button>
-          </div>
-        </div>
-
-        <div class="text-right">
-          <p class="text-lg font-semibold">
-            {{ formatCurrency(getItemPrice(item)) }}
-          </p>
-          <button
-            @click="cartStore.removeFromCart(item.id)"
-            class="text-sm text-red-500 hover:underline"
-          >
-            Xóa
-          </button>
-        </div>
+  <div class="max-w-6xl mx-auto py-10 px-4">
+    <div v-if="hasItems" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Cột 1: Danh sách sản phẩm -->
+      <div class="md:col-span-2">
+        <CartItemList :cartItems="cartItems" />
       </div>
 
-      <div v-if="cartItems.length === 0" class="text-center py-10 text-gray-500">
-        <div class="max-w-xs mx-auto mb-4">
-          <img
-            :src="emptyCartImage"
-            alt="Giỏ hàng trống"
-            title="Giỏ hàng trống"
-            class="opacity-70 w-full h-auto dark:opacity-100"
-          />
-        </div>
-        <p class="text-gray-500 text-lg mb-2 dark:text-gray-200">Giỏ hàng của bạn đang trống!!!</p>
-        <NavLink to="/products" variant="outline" class="text-gray-400 text-md"
-          >Hãy thêm món ngon đầu tiên nào!</NavLink
-        >
+      <!-- Cột 2: Tóm tắt đơn hàng -->
+      <div class="md:col-span-1">
+        <CartSummaryPanel
+          :subtotal="subtotal"
+          :shippingFee="shippingFee"
+          :total="total"
+          :hasItems="hasItems"
+          :isLoggedIn="isLoggedIn"
+          @checkout="checkout"
+        />
       </div>
     </div>
 
-    <div class="bg-white p-6 rounded-2xl shadow h-fit dark:bg-gray-600">
-      <h3 class="text-xl font-semibold mb-4">Tóm tắt đơn hàng</h3>
-      <div class="flex justify-between mb-2">
-        <span>Tạm tính:</span>
-        <span>{{ formatCurrency(totalPrice) }}</span>
+    <!-- Trạng thái giỏ hàng trống -->
+    <div v-else class="text-center py-10 text-gray-500">
+      <div class="max-w-xs mx-auto mb-4">
+        <img
+          :src="emptyCartImage"
+          alt="Giỏ hàng trống"
+          title="Giỏ hàng trống"
+          class="opacity-70 w-full h-auto dark:opacity-100"
+        />
       </div>
-      <div class="flex justify-between mb-2">
-        <span>Phí giao hàng:</span>
-        <span>{{ formatCurrency(shippingFee) }}</span>
-      </div>
-      <div class="border-t my-3"></div>
-      <div class="flex justify-between font-bold text-lg">
-        <span>Tổng cộng:</span>
-        <span>{{ formatCurrency(total) }}</span>
-      </div>
-
-      <button
-        @click="checkout"
-        class="mt-6 w-full bg-amber-500 hover:bg-amber-600 text-white py-3 rounded-xl font-semibold"
+      <p class="text-gray-500 text-lg mb-2 dark:text-gray-200">Giỏ hàng của bạn đang trống!!!</p>
+      <NavLink to="/products" variant="outline" class="text-gray-400 text-md"
+        >Hãy thêm món ngon đầu tiên nào!</NavLink
       >
-        Thanh toán ngay
-      </button>
     </div>
   </div>
 </template>

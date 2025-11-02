@@ -1,7 +1,4 @@
 <script setup>
-import { useStoreStore } from '@/stores/storeStore'
-// Không cần import RouterLink vì đã có sẵn trong template
-
 const props = defineProps({
   store: { type: Object, required: true },
 })

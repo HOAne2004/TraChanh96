@@ -35,14 +35,23 @@ export const useAppStore = defineStore('appStore', () => {
       console.error('❌ Lỗi Store khi fetch carousel:', error)
     }
   }
-const fetchAppConfig = async () => {
-        if (Object.keys(appConfig.value).length) return;
-        try {
-            const { data } = await appApi.getAppConfig(); // Giả định có hàm getAppConfig trong appApi
-            appConfig.value = data;
-        } catch (err) {
-            console.error('Lỗi tải cấu hình App:', err);
-        }
+  const fetchAppConfig = async () => {
+    if (Object.keys(appConfig.value).length) return
+    try {
+      const data  = await appApi.getAppConfig() 
+      appConfig.value = data
+    } catch (err) {
+      console.error('Lỗi tải cấu hình App:', err)
     }
-  return { footerInfo, storePolicies, carousel, appConfig, fetchFooterInfo, fetchStorePolicies, fetchCarousel, fetchAppConfig }
+  }
+  return {
+    footerInfo,
+    storePolicies,
+    carousel,
+    appConfig,
+    fetchFooterInfo,
+    fetchStorePolicies,
+    fetchCarousel,
+    fetchAppConfig,
+  }
 })

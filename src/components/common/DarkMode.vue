@@ -9,8 +9,7 @@ const ui = useUIStore()
   <Button
     :icon="ui.isDark ? '🌙' : '🌞'"
     variant="secondary"
-    size="sm"
-    class="p-2 rounded-full shadow-sm"
+    size="md"
     :aria-label="ui.isDark ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'"
     @click="ui.toggleDark"
   />

@@ -5,18 +5,16 @@ import NavLink from '@common/NavLink.vue'
 import LoginModal from '@/components/auth/LoginModal.vue'
 import logoHeader from '@logo/favicon.png'
 import Button from '@common/Button.vue'
+import ProfileMenu from '../common/ProfileMenu.vue'
 
 import { useCartStore } from '@/stores/cartStore'
 import { useModalStore } from '@/stores/modalStore'
-import { useUserStore } from '@/stores/userStore'
 import { storeToRefs } from 'pinia'
 
 const cartStore = useCartStore()
 const { totalQuantity } = storeToRefs(cartStore)
 
 const modal = useModalStore()
-const userStore = useUserStore()
-const { user, isLoggedIn, loading } = storeToRefs(userStore)
 </script>
 
 <template>
@@ -28,7 +26,9 @@ const { user, isLoggedIn, loading } = storeToRefs(userStore)
     >
       <RouterLink to="/" class="flex justify-start items-center gap-2">
         <img class="h-9 sm:h-10 md:h-12" :src="logoHeader" alt="Logo Trà Chanh 1996" />
-        <span class="hidden lg:inline font-bold text-primary text-lg font-[cursive] tracking-wide">Trà chanh 1996</span>
+        <span class="hidden lg:inline font-bold text-primary text-lg font-[cursive] tracking-wide"
+          >Trà chanh 1996</span
+        >
       </RouterLink>
 
       <nav class="hidden sm:flex items-center justify-center gap-x-8 text-sm md:text-base">
@@ -71,23 +71,11 @@ const { user, isLoggedIn, loading } = storeToRefs(userStore)
 
         <DarkMode />
 
-        <!-- 🔑 Nút mở modal -->
-
-        <div>
-          <template v-if="isLoggedIn">
-            <span class="mr-4">Xin chào, {{ user.name }}!</span>
-
-            <Button @click="userStore.logout" variant="faded" label="Đăng xuất"> </Button>
-          </template>
-
-          <template v-else>
-            <Button @click="modal.openLoginModal" variant="primary" label="Đăng nhập"> </Button>
-          </template>
-        </div>
+        <ProfileMenu />
         
         <LoginModal />
         <Button
-          @click="openMobileMenu"
+          @click="modal.openMobileMenu"
           class="block sm:hidden p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"
         >
           <svg

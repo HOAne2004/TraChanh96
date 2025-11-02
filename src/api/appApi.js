@@ -37,6 +37,7 @@ const appApi = {
       const { data } = await http.get('/appConfig')
       return data
     } catch (error) {
+      console.error('❌ Lỗi khi fetch appConfig:', error.message)
       throw error
     }
   },

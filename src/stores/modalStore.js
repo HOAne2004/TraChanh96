@@ -19,6 +19,23 @@ export const useModalStore = defineStore('modal', () => {
   const closeMobileMenu = () => {
     isMobileMenuOpen.value = false
   }
+
+  const toastMessage = ref(null)
+  const isToastVisible = ref(false)
+  const toastType = ref('success') // 'success', 'error', 'info'
+
+  const showToast = (message, type = 'success', duration = 3000) => {
+    toastMessage.value = message
+    toastType.value = type
+    isToastVisible.value = true
+
+    // Tự động ẩn sau 3 giây
+    setTimeout(() => {
+      isToastVisible.value = false
+      toastMessage.value = null
+    }, duration)
+  }
+
   return {
     isLoginModalOpen,
     isMobileMenuOpen,
@@ -26,5 +43,9 @@ export const useModalStore = defineStore('modal', () => {
     closeLoginModal,
     openMobileMenu,
     closeMobileMenu,
+    toastMessage,
+    isToastVisible,
+    toastType,
+    showToast,
   }
 })

@@ -1,30 +1,24 @@
 <script setup>
-import NavLink from '@/components/common/NavLink.vue';
+import NavLink from '@/components/common/NavLink.vue'
 
-import { computed, onMounted } from 'vue'; // Bỏ ref nếu không dùng
-import { useRoute } from 'vue-router';
-import { useStoreStore } from '@/stores/storeStore';
-import { storeToRefs } from 'pinia';
+import { computed, onMounted } from 'vue' // Bỏ ref nếu không dùng
+import { useRoute } from 'vue-router'
+import { useStoreStore } from '@/stores/storeStore'
+import { storeToRefs } from 'pinia'
 
-const route = useRoute();
-const storeStore = useStoreStore();
-const { stores } = storeToRefs(storeStore);
+const route = useRoute()
+const storeStore = useStoreStore()
+const { stores } = storeToRefs(storeStore)
 
-// Lấy ID từ URL (luôn là chuỗi)
-const routeStoreId = computed(() => route.params.id);
+const routeStoreId = computed(() => route.params.id)
 
-// 🚨 TỐI ƯU HÓA: Chỉ chuyển đổi ID từ route khi cần (giữ nguyên ID gốc để debug)
-// ID dạng số (để so sánh)
-const storeIdNumber = computed(() => Number(routeStoreId.value));
+const storeIdNumber = computed(() => Number(routeStoreId.value))
 
-// ✅ LOGIC CHÍNH XÁC: So sánh ID trong Store (ép kiểu) với ID đã chuyển đổi
-const currentStore = computed(() =>
-    stores.value.find(s => Number(s.id) === storeIdNumber.value)
-);
+const currentStore = computed(() => stores.value.find((s) => Number(s.id) === storeIdNumber.value))
 
 onMounted(async () => {
-    await storeStore.fetchStores();
-});
+  await storeStore.fetchStores()
+})
 </script>
 
 <template>
@@ -84,14 +78,14 @@ onMounted(async () => {
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700 dark:text-gray-300">
         <div class="space-y-3">
           <p class="leading-relaxed">{{ currentStore.description }}</p>
-          <p class="text-sm font-semibold text-green-600 dark:text-green-500">
+          <p v-if="currentStore.openTime" class="text-sm font-semibold text-green-600 dark:text-green-500">
             Mở cửa từ:
-            <span class="font-normal text-gray-700 dark:text-gray-300">8:00 AM - 10:00 PM</span>
+            <span class="font-normal text-gray-700 dark:text-gray-300">{{ currentStore.openTime }}</span>
           </p>
-          <p class="text-sm font-semibold text-green-600 dark:text-green-500">
+          <p v-if="currentStore.branchPhone" class="text-sm font-semibold text-green-600 dark:text-green-500">
             Điện thoại:
             <span class="font-normal text-gray-700 dark:text-gray-300"
-              >0123 456 789 (Gọi chi nhánh)</span
+              >{{ currentStore.branchPhone }} (Gọi chi nhánh)</span
             >
           </p>
         </div>

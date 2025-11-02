@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useProductStore } from '@stores/productStore'
 import { useAppStore } from '@stores/appStore'
 import { storeToRefs } from 'pinia'
@@ -9,6 +9,8 @@ import { useCartStore } from '@stores/cartStore'
 import Notification from '@common/Notification.vue'
 import NavLink from '@common/NavLink.vue'
 import TitledContainer from '@customer/TitledContainer.vue'
+import Button from '@/components/common/Button.vue'
+import DeliveryInfor from '@/components/customer/DeliveryInfor.vue'
 
 const route = useRoute()
 const productStore = useProductStore()
@@ -180,7 +182,11 @@ watch(
   },
   { deep: true },
 )
-// Test gửi đi
+
+const router = useRouter
+const checkout = () => {
+  router.push('/checkout')
+}
 </script>
 
 <template>
@@ -335,28 +341,25 @@ watch(
         </div>
         <!-- Nút mua -->
         <div class="flex gap-4 mt-4">
-          <button class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700">
-            Mua ngay
-          </button>
-          <button
-            @click="addToCart"
-            class="border border-green-600 text-green-600 px-4 py-3 rounded-lg hover:bg-green-50"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-6 h-6 inline-block"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-              />
-            </svg>
-          </button>
+          <Button @click="checkout" variant="primary"> Mua ngay </Button>
+          <Button @click="addToCart" variant="outline">
+            <template #icon>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6 inline-block"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+                />
+              </svg>
+            </template>
+          </Button>
         </div>
       </div>
     </div>
@@ -366,49 +369,7 @@ watch(
     </TitledContainer>
 
     <!-- Thông tin giao hàng -->
-    <TitledContainer title="Thông tin giao hàng" controls="hidden" v-if="storePolicy">
-      <ul class="text-gray-700 space-y-1 leading-relaxed">
-        <li>
-          ⏰ <strong>Thời gian chuẩn bị:</strong> {{ storePolicy.prepareTime || 'Đang cập nhật' }}
-        </li>
-        <li>
-          🚚 <strong>Thời gian giao hàng ước tính:</strong>
-          {{ storePolicy.deliveryTimeEstimate || 'Đang cập nhật' }}
-        </li>
-        <li>
-          📍 <strong>Phạm vi giao hàng:</strong> Bán kính {{ storePolicy.deliveryRadius || '—' }} –
-          <span class="italic">{{
-            storePolicy.deliveryAreas?.join(', ') || 'Chưa có thông tin'
-          }}</span>
-        </li>
-        <li v-if="storePolicy.deliveryFee !== undefined">
-          💰 <strong>Phí giao hàng:</strong> {{ Number(storePolicy.deliveryFee).toLocaleString() }}đ
-          <span v-if="storePolicy.freeShipThreshold">
-            (Miễn phí với đơn từ {{ Number(storePolicy.freeShipThreshold).toLocaleString() }}đ)
-          </span>
-        </li>
-        <li v-if="storePolicy.extraFeePerKm !== undefined">
-          ➕ <strong>Phụ phí thêm mỗi km:</strong>
-          {{ Number(storePolicy.extraFeePerKm).toLocaleString() }}đ/km
-        </li>
-        <li>💸 <strong>Chính sách hoàn tiền:</strong> {{ storePolicy.refundPolicy || '—' }}</li>
-        <li>↩️ <strong>Thời hạn đổi trả:</strong> {{ storePolicy.returnWindow || '—' }}</li>
-        <li>❌ <strong>Chính sách hủy:</strong> {{ storePolicy.cancelPolicy || '—' }}</li>
-        <li>
-          📞 <strong>Hỗ trợ:</strong> {{ storePolicy.supportPhone || '—' }} –
-          {{ storePolicy.supportEmail || '—' }}
-        </li>
-        <li v-if="storePolicy.note">🕐 <strong>Lưu ý:</strong> {{ storePolicy.note }}</li>
-        <li class="text-sm text-gray-500">
-          Cập nhật lần cuối:
-          {{
-            storePolicy.lastUpdated
-              ? new Date(storePolicy.lastUpdated).toLocaleString('vi-VN')
-              : 'Chưa có dữ liệu'
-          }}
-        </li>
-      </ul>
-    </TitledContainer>
+    <DeliveryInfor v-if="storePolicy" :policy="storePolicy" />
 
     <Notification :show="showNotification" :message="`Đã thêm ${product.name} vào giỏ hàng`" />
   </main>

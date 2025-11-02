@@ -36,11 +36,11 @@ const defaultIce = computed(() => {
   return iceGroup.find((i) => i.value === 100) || { label: '100%', value: 100 }
 })
 
-onMounted(async () => {
-  // 🚨 Đảm bảo các options đã được tải
-  // (Mặc dù ProductDetail/HomeView đã gọi, gọi lại ở đây để đảm bảo tính độc lập)
-  await productStore.fetchProduct()
-})
+// onMounted(async () => {
+//   // 🚨 Đảm bảo các options đã được tải
+//   // (Mặc dù ProductDetail/HomeView đã gọi, gọi lại ở đây để đảm bảo tính độc lập)
+//   await productStore.fetchProduct()
+// })
 
 const addToCart = () => {
   // Tạo item với cấu trúc mặc định động
