@@ -1,18 +1,14 @@
 <script setup>
-import Footer from '@/components/customer/Footer.vue'
-import Header from '@/components/customer/Header.vue'
+import AdminSidebar from '@/components/admin/AdminSidebar.vue';
 </script>
 <template>
-  <div class="flex flex-col min-h-screen">
+  <div class="flex min-h-screen">
     <!-- Header -->
-    <Header></Header>
+    <AdminSidebar></AdminSidebar>
 
     <!-- Nội dung chính -->
     <main class="flex-1 container mx-auto p-4">
       <RouterView />
     </main>
-
-    <!-- Footer -->
-    <Footer />
   </div>
 </template>

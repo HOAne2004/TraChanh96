@@ -3,8 +3,6 @@ import { computed } from 'vue'
 import Button from '@/components/common/Button.vue'
 
 const props = defineProps({
-  subtotal: { type: Number, required: true },
-  shippingFee: { type: Number, required: true },
   total: { type: Number, required: true },
   hasItems: { type: Boolean, required: true },
   isLoggedIn: { type: Boolean, required: true },
@@ -24,14 +22,6 @@ const checkoutLabel = computed(() => {
 <template>
   <div class="bg-white p-6 rounded-2xl shadow h-fit dark:bg-gray-600 sticky top-24">
     <h3 class="text-xl font-semibold mb-4">Tóm tắt đơn hàng</h3>
-    <div class="flex justify-between mb-2">
-      <span>Tạm tính:</span>
-      <span>{{ formatCurrency(subtotal) }}</span>
-    </div>
-    <div class="flex justify-between mb-2">
-      <span>Phí giao hàng:</span>
-      <span>{{ formatCurrency(shippingFee) }}</span>
-    </div>
     <div class="border-t my-3 dark:border-gray-500"></div>
     <div class="flex justify-between font-bold text-lg text-green-700 dark:text-green-300">
       <span>Tổng cộng:</span>

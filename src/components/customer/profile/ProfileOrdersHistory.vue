@@ -1,0 +1,221 @@
+<script setup>
+import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import Button from '@/components/common/Button.vue'
+
+const props = defineProps({
+  orders: { type: Array, default: () => [] },
+  isLoading: { type: Boolean, default: false },
+})
+
+const router = useRouter()
+
+// --- LOGIC PHÂN TRANG (PAGINATION) ---
+const ITEMS_PER_PAGE = 10 // 👉 Giới hạn 10 đơn hàng/trang
+const currentPage = ref(1) // Trang hiện tại
+
+// Tính tổng số trang
+const totalPages = computed(() => {
+  if (!props.orders || props.orders.length === 0) return 0
+  return Math.ceil(props.orders.length / ITEMS_PER_PAGE)
+})
+
+// 💡 Đảm bảo rằng khi props.orders thay đổi (ví dụ: tải xong),
+// trang hiện tại được đặt lại về 1 để tránh lỗi khi trang đang chọn không tồn tại.
+watch(
+  () => props.orders,
+  () => {
+    if (currentPage.value > totalPages.value || currentPage.value < 1) {
+      currentPage.value = 1
+    }
+  },
+  { immediate: true },
+)
+
+// Danh sách đơn hàng cho trang hiện tại
+const paginatedOrders = computed(() => {
+  const start = (currentPage.value - 1) * ITEMS_PER_PAGE
+  const end = start + ITEMS_PER_PAGE
+  return props.orders.slice(start, end)
+})
+
+// --- LOGIC ĐỊNH DẠNG VÀ TRẠNG THÁI ---
+const formatCurrency = (val) =>
+  new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val)
+
+const formatDate = (dateString) => {
+  if (!dateString) return 'Chưa có thông tin'
+  try {
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    }
+    return new Date(dateString).toLocaleDateString('vi-VN', options)
+  } catch (error) {
+    console.error('Lỗi định dạng ngày:', error)
+    return 'Ngày không hợp lệ'
+  }
+}
+
+const getStatusClasses = (status) => {
+  const lowerStatus = status?.toLowerCase()
+  switch (lowerStatus) {
+    case 'pending':
+      return {
+        text: 'Đang xử lý',
+        class: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+      }
+    case 'completed':
+      return {
+        text: 'Hoàn thành',
+        class: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+      }
+    case 'cancelled':
+      return { text: 'Đã hủy', class: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' }
+    default:
+      return {
+        text: status || 'Không rõ',
+        class: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+      }
+  }
+}
+
+const hasOrders = computed(() => props.orders && props.orders.length > 0)
+
+// Hàm điều hướng
+const goToOrderDetail = (orderId) => {
+  if (orderId) {
+    router.push(`/orders/${orderId}`)
+  }
+}
+
+// Chức năng chuyển trang
+const goToPage = (page) => {
+  const targetPage = Math.max(1, Math.min(page, totalPages.value))
+  if (targetPage !== currentPage.value) {
+    currentPage.value = targetPage
+    // Cuộn lên đầu trang sau khi chuyển trang
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+</script>
+
+<template>
+  <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
+    <h3 class="text-3xl font-bold mb-6 text-gray-900 dark:text-white border-b pb-4">
+      Lịch sử Đơn hàng ({{ orders.length }})
+    </h3>
+
+    <div v-if="isLoading" class="text-center py-10 text-lg text-green-600 dark:text-green-400">
+      <svg
+        class="animate-spin mx-auto h-8 w-8 text-green-600 dark:text-green-400"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
+      <p class="mt-4">Đang tải lịch sử đơn hàng...</p>
+    </div>
+
+    <div v-else-if="!hasOrders" class="text-center py-10">
+      <p class="text-lg text-gray-500 dark:text-gray-400">
+        Bạn chưa có đơn hàng nào. Hãy bắt đầu mua sắm ngay!
+      </p>
+    </div>
+
+    <div v-else class="space-y-6">
+      <div
+        v-for="order in paginatedOrders"
+        :key="order.id"
+        @click="goToOrderDetail(order.id)"
+        class="border dark:border-gray-700 p-4 rounded-lg shadow-sm transition duration-150 hover:shadow-md cursor-pointer"
+      >
+        <div class="flex justify-between items-start mb-3 border-b dark:border-gray-700 pb-2">
+          <div>
+            <span class="text-sm font-semibold text-gray-600 dark:text-gray-400 block"
+              >Mã Đơn hàng:</span
+            >
+            <span class="text-xl font-bold text-green-700 dark:text-green-400"
+              >#{{ order.id }}</span
+            >
+          </div>
+
+          <span
+            :class="[
+              'px-3 py-1 text-xs font-semibold rounded-full',
+              getStatusClasses(order.status).class,
+            ]"
+          >
+            {{ getStatusClasses(order.status).text }}
+          </span>
+          
+        </div>
+
+        <div class="text-sm space-y-2">
+          <p class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">Ngày đặt:</span>
+            <span class="font-medium">{{ formatDate(order.createdAt) }}</span>
+          </p>
+          <p class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">Địa chỉ giao hàng:</span>
+            <span class="font-medium text-right max-w-[70%]">{{ order.address }}</span>
+          </p>
+          <p class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">Phương thức thanh toán:</span>
+            <span class="font-medium">{{
+              order.paymentMethod === 'cash' ? 'COD' : 'Chuyển khoản'
+            }}</span>
+          </p>
+          <div
+            class="border-t pt-2 mt-2 dark:border-gray-700 flex justify-between font-bold text-lg"
+          >
+            <span>TỔNG CỘNG:</span>
+            <span class="text-red-600 dark:text-red-400">{{
+              formatCurrency(order.totalAmount)
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="totalPages > 1" class="flex justify-center items-center space-x-2 mt-8">
+      <Button
+        @click="goToPage(currentPage - 1)"
+        :disabled="currentPage === 1"
+        icon="←"
+        label="Trước"
+        variant="secondary"
+        size="sm"
+      />
+
+      <span class="text-sm font-medium text-gray-700 dark:text-gray-300 px-2">
+        Trang {{ currentPage }} / {{ totalPages }}
+      </span>
+
+      <Button
+        @click="goToPage(currentPage + 1)"
+        :disabled="currentPage === totalPages"
+        icon="→"
+        label="Sau"
+        variant="secondary"
+        size="sm"
+        class="flex-row-reverse"
+      />
+    </div>
+  </div>
+</template>

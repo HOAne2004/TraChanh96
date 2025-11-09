@@ -14,6 +14,10 @@ export const useUserStore = defineStore('user', () => {
   const loading = ref(false)
   const error = ref(null)
 
+  // 🚨 ADMIN STATE
+  const allUsers = ref([]) // Danh sách tất cả người dùng cho Admin
+  const usersLoading = ref(false)
+
   // 🔎 GETTERS
   const isLoggedIn = computed(() => !!user.value && !!token.value)
   const isAdmin = computed(() => user.value?.role === 'admin') // Tích hợp logic isAdmin
@@ -112,6 +116,66 @@ export const useUserStore = defineStore('user', () => {
     clearAuthData() // Xóa user, token
     router.push('/')
   }
+  /** 4. USER: CẬP NHẬT THÔNG TIN CÁ NHÂN/ĐỊA CHỈ */
+  const updateProfileAction = async (updateData) => {
+    loading.value = true
+    error.value = null
+    try {
+      const updatedUser = await authApi.updateProfile(user.value.id, updateData)
+
+      // 💡 Quan trọng: Cập nhật user state cục bộ và localStorage
+      setAuthData(updatedUser)
+
+      modalStore.showToast('Cập nhật hồ sơ thành công!', 'success')
+      return updatedUser
+    } catch (err) {
+      modalStore.showToast(err.message || 'Cập nhật hồ sơ thất bại.', 'error')
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // --- ACTIONS ADMIN ---
+
+  /** 5. ADMIN: TẢI DANH SÁCH TẤT CẢ NGƯỜI DÙNG */
+  const fetchUsersForAdmin = async (params = {}) => {
+    if (usersLoading.value) return
+    usersLoading.value = true
+    error.value = null
+    try {
+      const usersList = await authApi.fetchUsers(params)
+      allUsers.value = usersList
+    } catch (err) {
+      error.value = err.message || 'Lỗi khi tải danh sách người dùng.'
+      modalStore.showToast(error.value, 'error')
+    } finally {
+      usersLoading.value = false
+    }
+  }
+
+  /** 6. ADMIN: CẬP NHẬT DỮ LIỆU/VAI TRÒ CỦA NGƯỜI DÙNG BẤT KỲ */
+  const updateUserDataAction = async (userId, updateData) => {
+    usersLoading.value = true // Sử dụng usersLoading để khóa trang quản lý
+    error.value = null
+    try {
+      const updatedUser = await authApi.updateUserData(userId, updateData)
+
+      // Cập nhật State: Tìm và thay thế user trong allUsers
+      const index = allUsers.value.findIndex((u) => String(u.id) === String(userId))
+      if (index !== -1) {
+        allUsers.value[index] = updatedUser
+      }
+
+      modalStore.showToast(`Cập nhật người dùng ID ${userId} thành công.`, 'success')
+      return updatedUser
+    } catch (err) {
+      modalStore.showToast('Cập nhật người dùng thất bại.', 'error')
+      throw err
+    } finally {
+      usersLoading.value = false
+    }
+  }
 
   // 🔁 EXPORT
   return {
@@ -120,6 +184,8 @@ export const useUserStore = defineStore('user', () => {
     token,
     loading,
     error,
+    allUsers,
+    usersLoading,
 
     // Getters
     isLoggedIn,
@@ -129,5 +195,8 @@ export const useUserStore = defineStore('user', () => {
     login, // Tên hàm chính thức
     logout,
     register,
+    fetchUsersForAdmin,
+    updateUserDataAction,
+    updateProfileAction,
   }
 })

@@ -39,6 +39,7 @@ const classes = computed(() => {
       hover:bg-green-50 transition-colors duration-200
     `,
     primary: 'bg-green-600 text-white hover:bg-green-700',
+    secondary: 'text-green-600 hover:underline dark:text-green-400',
   }
   const sizes = {
     sm: 'px-2 py-1 text-sm',
@@ -53,7 +54,13 @@ const classes = computed(() => {
 
   const disabledClass = props.disabled ? 'opacity-50 cursor-not-allowed' : ''
 
-  return [base, sizes[props.size], variants[props.variant] || variants.nav, activeClass, disabledClass].join(' ')
+  return [
+    base,
+    sizes[props.size],
+    variants[props.variant] || variants.nav,
+    activeClass,
+    disabledClass,
+  ].join(' ')
 })
 </script>
 

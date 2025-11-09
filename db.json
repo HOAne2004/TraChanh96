@@ -595,16 +595,20 @@
     {
       "id": "1",
       "phone": "0123456789",
+      "email": "nguyenvana@gmail.com",
       "password": "123456",
       "name": "Nguyễn Văn A",
+      "address": "123 Đường ABC, Quận XYZ, TP. HCM",
       "role": "user",
       "token": "user-token-abc"
     },
     {
       "id": "2",
       "phone": "0987654321",
+      "email": "admin@gmail.com",
       "password": "admin123",
       "name": "Admin",
+      "address": "123 Đường ABC, Quận XYZ, TP. HCM",
       "role": "admin",
       "token": "admin-token-xyz"
     },
@@ -612,6 +616,8 @@
       "id": "1761892820612",
       "name": "Hoan",
       "phone": "01111111111",
+      "address": "123 Đường ABC, Quận XYZ, TP. HCM",
+      "email": "hoan@gmail.com",
       "password": "123456",
       "role": "user",
       "token": "token_1761892820612"
@@ -621,6 +627,95 @@
     {
       "id": "101",
       "userId": 1,
+      "items": [
+        {
+          "id": 1762196136558,
+          "productId": "3",
+          "name": "Trà xoài chanh leo",
+          "price": 25000,
+          "image": "/images/products/dauDoSuaDua.png",
+          "quantity": 1,
+          "size": "S",
+          "sugar": "100%",
+          "ice": "100%",
+          "sizePrice": 0,
+          "toppings": [],
+          "toppingPrice": 0
+        },
+        {
+          "id": 1762196138180,
+          "productId": "4",
+          "name": "Trà vải",
+          "price": 20000,
+          "image": "/images/products/dauDoSuaDua.png",
+          "quantity": 1,
+          "size": "S",
+          "sugar": "100%",
+          "ice": "100%",
+          "sizePrice": 0,
+          "toppings": [],
+          "toppingPrice": 0
+        }
+      ],
+      "updatedAt": "2025-11-09T07:00:41.219Z"
+    },
+    {
+      "id": "102",
+      "userId": 1,
+      "items": [
+        {
+          "id": 167888000201,
+          "productId": 10,
+          "name": "Cà phê sữa đá",
+          "price": 30000,
+          "image": "/images/products/cf-sua-da.png",
+          "quantity": 3,
+          "size": "S",
+          "sizePrice": 0,
+          "sugar": "100%",
+          "ice": "0%",
+          "toppings": []
+        }
+      ],
+      "updatedAt": "2025-10-31T08:00:00Z"
+    },
+    {
+      "id": "55e5",
+      "userId": "2",
+      "items": [
+        {
+          "id": "12",
+          "name": "Trà đào cam sả",
+          "price": 35000,
+          "rating": 4.9,
+          "sold": 520,
+          "image": "/images/products/dauDoSuaDua.png",
+          "description": "Trà sữa cao cấp pha từ trà ô long thượng hạng...",
+          "createdAt": "2025-09-28",
+          "categoryId": 1,
+          "sizeId": 1,
+          "sugarLevelId": 1,
+          "toppingIds": [
+            1,
+            2,
+            3
+          ],
+          "quantity": 3,
+          "options": {}
+        }
+      ],
+      "updatedAt": "2025-11-09T07:19:36.541Z"
+    }
+  ],
+  "appConfig": {
+    "chainCount": 35,
+    "chainCountNote": "Chuỗi cửa hàng trên toàn quốc",
+    "brandStory": "Tên thương hiệu và triết lý kinh doanh của chúng tôi là..."
+  },
+  "orders": [
+    {
+      "id": "f8a6",
+      "userId": "1",
       "items": [
         {
           "id": 1762103582324,
@@ -665,39 +760,11 @@
           "toppingPrice": 0
         }
       ],
-      "updatedAt": "2025-11-02T19:12:35.952Z"
-    },
-    {
-      "id": "102",
-      "userId": 1,
-      "items": [
-        {
-          "id": 167888000201,
-          "productId": 10,
-          "name": "Cà phê sữa đá",
-          "price": 30000,
-          "image": "/images/products/cf-sua-da.png",
-          "quantity": 3,
-          "size": "S",
-          "sizePrice": 0,
-          "sugar": "100%",
-          "ice": "0%",
-          "toppings": []
-        }
-      ],
-      "updatedAt": "2025-10-31T08:00:00Z"
-    },
-    {
-      "id": "55e5",
-      "userId": "2",
-      "items": [],
-      "updatedAt": "2025-11-02T14:20:19.527Z"
+      "address": "ầdfdggjghhkghfgdfgh",
+      "totalAmount": 113000,
+      "paymentMethod": "cash",
+      "status": "pending",
+      "createdAt": "2025-11-03T18:52:19.804Z"
     }
-  ],
-  "appConfig": {
-    "chainCount": 35,
-    "chainCountNote": "Chuỗi cửa hàng trên toàn quốc",
-    "brandStory": "Tên thương hiệu và triết lý kinh doanh của chúng tôi là..."
-  },
-  "orders": []
+  ]
 }

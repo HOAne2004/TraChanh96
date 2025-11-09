@@ -15,7 +15,8 @@ const CartView = () => import('@/views/customer/CartView.vue')
 const RegisterView = () => import('@/views/customer/RegisterView.vue')
 const ForgotPasswordView = () => import('@/views/customer/ForgotPasswordView.vue')
 const CheckoutView = () => import('@/views/customer/CheckoutView.vue')
-const OrderHistoryView = () => import('@/views/customer/OrderHistoryView.vue')
+const ProfileView = () => import('@/views/customer/ProfileView.vue')
+
 // Admin
 const AdminDashboard = () => import('@/views/admin/Dashboard.vue')
 
@@ -53,13 +54,14 @@ const routes = [
 
       { path: 'checkout', name: 'checkout', component: CheckoutView },
 
-      { path: 'orders', name: 'orders', component: OrderHistoryView },
       {
         path: '/orders/:id',
         name: 'OrderDetail',
         component: () => import('@/views/customer/OrderDetailView.vue'),
         props: true,
       },
+
+      {path: 'profile', name:'profile', component: ProfileView},
 
       // 🚨 ROUTES XÁC THỰC MỚI
       { path: 'register', name: 'register', component: RegisterView }, // Đăng ký

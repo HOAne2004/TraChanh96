@@ -32,17 +32,7 @@ onMounted(async () => {
   await appStore.fetchStorePolicies()
 })
 
-// Tính phí giao hàng
-const shippingFee = computed(() => {
-  if (cartItems.value.length === 0) {
-    return 0
-  }
-  // Lấy phí giao hàng từ chính sách (giả định policy đầu tiên)
-  return Number(storePolicies.value?.[0]?.deliveryFee) || 0
-})
-
-const subtotal = computed(() => Number(totalPrice.value))
-const total = computed(() => subtotal.value + shippingFee.value)
+const total = computed(() => Number(totalPrice.value))
 const hasItems = computed(() => cartItems.value.length > 0)
 
 // 🚨 LOGIC THANH TOÁN ĐÃ TỐI ƯU

@@ -5,7 +5,7 @@ import NavLink from '@common/NavLink.vue'
 import LoginModal from '@/components/auth/LoginModal.vue'
 import logoHeader from '@logo/favicon.png'
 import Button from '@common/Button.vue'
-import ProfileMenu from '../common/ProfileMenu.vue'
+import ProfileMenu from '@customer/profile/ProfileMenu.vue'
 
 import { useCartStore } from '@/stores/cartStore'
 import { useModalStore } from '@/stores/modalStore'

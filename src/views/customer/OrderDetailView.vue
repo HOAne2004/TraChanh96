@@ -17,12 +17,12 @@ const { orders, isLoading, error } = storeToRefs(orderStore)
 const { user } = storeToRefs(userStore)
 
 // Lấy orderId từ URL
-const orderId = computed(() => Number(route.params.id))
+const orderId = computed(() => route.params.id)
 
 // Tìm đơn hàng cụ thể trong danh sách
 // Nếu danh sách rỗng, onMounted sẽ trigger fetch
 const order = computed(() => {
-  return orders.value.find((o) => o.id === orderId.value)
+  return orders.value.find((o) => String(o.id) === orderId.value)
 })
 
 // Fetch data on mount
@@ -86,10 +86,9 @@ const getToppingsDisplay = (toppings) => {
     <!-- Breadcrumb -->
     <div class="mb-4">
       <NavLink
-        to="/orders"
+        to="/profile?tab=orders"
         label="&larr; Quay lại Lịch sử đơn hàng"
-        variant="profile"
-        class="text-green-600 hover:underline dark:text-green-400"
+        variant="secondary"
       />
     </div>
 
@@ -144,6 +143,10 @@ const getToppingsDisplay = (toppings) => {
           <div class="text-sm space-y-1">
             <p class="text-gray-500 dark:text-gray-400">Tên người nhận:</p>
             <p class="font-medium text-gray-800 dark:text-gray-200">{{ user.name || 'Khách' }}</p>
+          </div>
+          <div class="text-sm space-y-1">
+            <p class="text-gray-500 dark:text-gray-400">Điện thoại:</p>
+            <p class="font-medium text-gray-800 dark:text-gray-200">{{ user.phone || 'Khách' }}</p>
           </div>
           <div class="text-sm space-y-1">
             <p class="text-gray-500 dark:text-gray-400">Địa chỉ giao hàng:</p>

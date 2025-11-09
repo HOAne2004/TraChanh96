@@ -2,13 +2,18 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 // 🚨 Import API service
 import { placeOrder, fetchUserOrders } from '@/api/orderApi'
-
+import { useModalStore } from './modalStore'
 // Giả định bạn có userStore để lấy token hoặc userId nếu cần
 // import { useUserStore } from './userStore'
 
 export const useOrderStore = defineStore('order', () => {
+  // Stores
+  const modalStore = useModalStore()
+
   // --- STATE ---
   const orders = ref([])
+  const allOrders = ref([]) // 🚨 ADMIN: Danh sách tất cả đơn hàng
+  const totalOrdersCount = ref(0) // 🚨 ADMIN: Tổng số đơn hàng (cho phân trang)
   const isLoading = ref(false)
   const error = ref(null)
 
@@ -59,12 +64,66 @@ export const useOrderStore = defineStore('order', () => {
     }
   }
 
+  // --- ACTIONS ADMIN (BỔ SUNG) ---
+
+  /** 3. ADMIN: Tải tất cả đơn hàng cho trang quản trị */
+  async function fetchAllOrdersAction(params = {}) {
+    isLoading.value = true // Sử dụng chung isLoading
+    error.value = null
+
+    try {
+      const { data, totalCount } = await fetchAllOrdersForAdmin(params)
+
+      allOrders.value = data
+      totalOrdersCount.value = parseInt(totalCount || 0, 10)
+    } catch (err) {
+      console.error('OrderStore: Lỗi tải tất cả đơn hàng:', err)
+      error.value = 'Lỗi khi tải danh sách đơn hàng quản trị.'
+      modalStore.showToast(error.value, 'error')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  /** 4. ADMIN: Cập nhật trạng thái đơn hàng */
+  async function updateOrderStatusAction(orderId, newStatus) {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const updatedOrder = await updateOrderStatus(orderId, newStatus)
+
+      // Cập nhật State: Tìm và thay thế đơn hàng trong allOrders
+      const index = allOrders.value.findIndex((o) => String(o.id) === String(orderId))
+      if (index !== -1) {
+        // Thay thế dữ liệu đơn hàng đã cập nhật
+        allOrders.value[index] = updatedOrder
+      }
+
+      modalStore.showToast(
+        `Cập nhật trạng thái đơn hàng #${orderId} thành công: ${newStatus}`,
+        'success',
+      )
+      return updatedOrder
+    } catch (err) {
+      console.error('OrderStore: Lỗi cập nhật trạng thái:', err)
+      error.value = 'Không thể cập nhật trạng thái đơn hàng.'
+      modalStore.showToast(error.value, 'error')
+      throw err
+    } finally {
+      isLoading.value = false
+    }
+  }
   // --- RETURN ---
   return {
     orders,
+    allOrders, // 🚨 EXPORT MỚI
+    totalOrdersCount, // 🚨 EXPORT MỚI
     isLoading,
     error,
     placeOrderAction,
-    fetchOrdersAction,
+    fetchOrdersAction, // Đổi tên để tránh xung đột với tên hàm mới
+    fetchAllOrdersAction, // 🚨 EXPORT MỚI
+    updateOrderStatusAction, // 🚨 EXPORT MỚI
   }
 })

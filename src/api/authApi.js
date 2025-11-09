@@ -37,7 +37,7 @@ const authApi = {
    * Mục đích: POST user mới nếu SĐT chưa tồn tại.
    * @throws {Error} Nếu SĐT đã tồn tại hoặc lỗi mạng.
    */
-  async register(userData) { 
+  async register(userData) {
     try {
       // 1. Kiểm tra SĐT đã tồn tại chưa
       const checkRes = await http.get(AUTH_ENDPOINT, { params: { phone: userData.phone } })
@@ -58,6 +58,39 @@ const authApi = {
     } catch (error) {
       // Ném lỗi lên Store xử lý
       throw new Error(error.response?.data?.message || error.message || 'Đăng ký thất bại.')
+    }
+  },
+
+  /** 3. CẬP NHẬT THÔNG TIN CÁ NHÂN (USER PROFILE) */
+  async updateProfile(userId, updateData) {
+    try {
+      // PUT/PATCH để cập nhật thông tin cá nhân (tên, địa chỉ)
+      const res = await http.patch(`${AUTH_ENDPOINT}/${userId}`, updateData)
+      return res.data
+    } catch (error) {
+      throw new Error('Cập nhật thông tin thất bại. Vui lòng thử lại.')
+    }
+  },
+
+  /** 4. ADMIN: TẢI DANH SÁCH TẤT CẢ NGƯỜI DÙNG */
+  async fetchUsers(params = {}) {
+    try {
+      // Thêm params cho phân trang/tìm kiếm nếu cần
+      const res = await http.get(AUTH_ENDPOINT, { params })
+      return res.data
+    } catch (error) {
+      throw new Error('Không thể tải danh sách người dùng.')
+    }
+  },
+
+  /** 5. ADMIN: CẬP NHẬT VAI TRÒ/DỮ LIỆU NGƯỜI DÙNG */
+  async updateUserData(userId, updateData) {
+    try {
+      // PATCH để cập nhật vai trò, mật khẩu, hoặc thông tin khác của người dùng
+      const res = await http.patch(`${AUTH_ENDPOINT}/${userId}`, updateData)
+      return res.data
+    } catch (error) {
+      throw new Error('Không thể cập nhật dữ liệu người dùng.')
     }
   },
 }
