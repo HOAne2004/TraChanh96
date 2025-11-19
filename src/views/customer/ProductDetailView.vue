@@ -25,7 +25,7 @@ const selectedIce = ref(null)
 const selectedToppings = ref([])
 const quantity = ref(1)
 
-const productId = computed(() => Number(route.params.id))
+const productId = computed(() => route.params.id)
 
 // Lấy sản phẩm theo ID
 const product = computed(() => products.value.find((p) => p.id == productId.value))
@@ -132,37 +132,44 @@ const cartStore = useCartStore()
 
 const showNotification = ref(false)
 const addToCart = () => {
-  if (!product.value) return
-
-  const itemToAdd = {
-    id: Date.now(), // Tạo ID duy nhất để phân biệt các item có options khác nhau
-    productId: product.value.id, // Giữ nguyên ID sản phẩm gốc
-    name: product.value.name,
-    price: product.value.price, // Giá gốc
-    sizePrice: selectedSize.value?.extraPrice || 0, // Thêm giá size
-    toppingPrice: selectedToppings.value.reduce((sum, t) => sum + Number(t.price), 0), // Tổng giá topping
-    image: product.value.image,
-    quantity: quantity.value,
-    size: selectedSize.value?.label || 'Mặc định',
-    sugar: selectedSugar.value?.label || '100%',
-    ice: selectedIce.value?.label || '100%',
-    toppings: selectedToppings.value.map((t) => ({
-      id: t.id,
-      name: t.name,
-      price: t.price,
-    })),
+  if (!product.value || !selectedSize.value || !selectedSugar.value || !selectedIce.value) {
+    // (Tùy chọn: Thêm thông báo lỗi cho người dùng)
+    console.error('Vui lòng chọn đầy đủ các tùy chọn sản phẩm.')
+    return
   }
 
-  console.log('🟢 Item thêm vào giỏ:', itemToAdd)
+  // 1. Xây dựng mảng Topping DTO (CartToppingCreateDto)
+  // API C# yêu cầu { productId, quantity } cho mỗi topping.
+  // Giao diện này chỉ hỗ trợ (toggle), nên ta giả định quantity = 1.
+  const toppingsDto = selectedToppings.value.map((topping) => {
+    return {
+      productId: topping.id, // ⭐️ Đây là ProductId của Topping
+      quantity: 1, // ⭐️ Giả định số lượng là 1
+    }
+  })
+  // 2. Xây dựng DTO Món chính (CartItemCreateDto)
+  const itemDto = {
+    productId: product.value.id, // ID món chính
+    quantity: quantity.value,
 
-  cartStore.addToCart(itemToAdd)
+    // ⭐️ QUAN TRỌNG: Gửi ID, không gửi Label hay Price
+    sizeId: selectedSize.value.id,
+    sugarLevelId: selectedSugar.value.id,
+    iceLevelId: selectedIce.value.id,
 
-  // Hiển thị thông báo
+    // Mảng topping lồng nhau
+    toppings: toppingsDto,
+  }
+
+  // 3. GỌI ACTION CỦA CARTSTORE MỚI
+  // cartStore.loading sẽ tự động được kích hoạt
+  // API C# sẽ xử lý việc tính toán giá cả
+  cartStore.addToCart(itemDto)
+
+  // 4. Hiển thị thông báo (Giữ nguyên)
   showNotification.value = false
   setTimeout(() => (showNotification.value = true), 10)
-
-  // Reset số lượng
-  quantity.value = 1
+  quantity.value = 1 // Reset số lượng
 }
 
 // debug (tạm): bỏ hoặc comment khi đã ok

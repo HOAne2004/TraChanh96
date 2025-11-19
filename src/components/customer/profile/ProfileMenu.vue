@@ -33,19 +33,6 @@ const handleClickOutside = (e) => {
   if (menuRef.value && !menuRef.value.contains(e.target)) closeMenu()
 }
 
-// 👉 Hàm chuyển hướng đến tab cụ thể (đã dùng ở bước trước)
-const navigateToProfileTab = (tab) => {
-  router.push({ path: '/profile', query: { tab: tab } })
-  closeMenu()
-}
-
-// 👉 Hàm chuyển hướng đến trang Admin
-const navigateToAdmin = () => {
-  // Giả định trang quản trị có đường dẫn là '/admin'
-  router.push('/admin')
-  closeMenu()
-}
-
 onMounted(() => document.addEventListener('click', handleClickOutside))
 onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 </script>
@@ -82,8 +69,8 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
         class="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm hover:shadow transition focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-800"
       >
         <img
-          v-if="user.avatar"
-          :src="user.avatar"
+          v-if="user?.thumbnailUrl"
+          :src="user.thumbnailUrl"
           alt="Avatar"
           class="w-8 h-8 rounded-full object-cover"
         />
@@ -107,7 +94,7 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
           </svg>
         </div>
         <span class="hidden md:inline font-medium text-sm text-gray-900 dark:text-gray-100">{{
-          user.name
+          user?.username || 'Khách'
         }}</span>
       </button>
 
@@ -128,13 +115,13 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
             class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
           >
             <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
-              {{ user.name }}
+              {{ user?.username }}
             </p>
           </div>
 
           <nav class="py-2 divide-y divide-gray-200 dark:divide-gray-700">
             <router-link
-              v-if="user && user.role === 'admin'"
+              v-if="user && user.role?.toLowerCase() === 'admin'"
               to="/admin"
               @click="closeMenu"
               class="flex gap-2 items-center px-4 py-3 text-sm text-gray-800 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition rounded-md"

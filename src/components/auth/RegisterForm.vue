@@ -1,36 +1,31 @@
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router' // Có thể dùng để điều hướng sau khi đăng ký
+import { ref, reactive } from 'vue'
 import { useUserStore } from '@/stores/userStore'
 
-const name = ref('')
-const phone = ref('')
-const password = ref('')
+const formData = reactive({
+  username: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+})
+
 const showPassword = ref(false)
-const confirmPassword = ref('')
-const router = useRouter()
 const auth = useUserStore()
 
 const handleRegister = async () => {
-  // 1. Kiểm tra Mật khẩu trùng khớp
-  if (password.value !== confirmPassword.value) {
+  if (formData.password !== formData.confirmPassword) {
     auth.error = 'Mật khẩu và Xác nhận Mật khẩu không khớp.'
     return
   }
 
-  // 2. Gọi action register từ Store
   try {
-    // 🚨 Đảm bảo action register đã được định nghĩa trong authStore
-    await auth.register(name.value, phone.value, password.value)
-
-    // Nếu thành công, Store sẽ tự điều hướng (về '/')
+    const { confirmPassword, ...dto } = formData
+    await auth.register(dto)
   } catch (err) {
-    // Lỗi sẽ được hiển thị qua auth.error
     console.error('Lỗi đăng ký:', err.message)
   }
 }
 
-// Xóa lỗi khi người dùng thay đổi input
 const clearError = () => {
   auth.error = null
 }
@@ -42,35 +37,41 @@ const clearError = () => {
 
     <div
       v-if="auth.error"
-      class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm"
+      class="relative bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm"
       role="alert"
     >
-      {{ auth.error }}
+      <span>{{ auth.error }}</span>
+      <button
+        @click="clearError"
+        class="absolute top-0 bottom-0 right-0 px-4"
+        aria-label="Close"
+      >
+        <span class="font-bold text-xl">&times;</span>
+      </button>
     </div>
 
     <form @submit.prevent="handleRegister" @input="clearError" class="space-y-4">
       <div>
-        <label for="name" class="block text-sm font-medium mb-1">Họ tên</label>
+        <label for="username" class="block text-sm font-medium mb-1">Họ tên</label>
         <input
-          id="name"
+          id="username"
           type="text"
-          v-model.trim="name"
+          v-model.trim="formData.username"
           required
           class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-green-300 outline-none dark:bg-gray-700 dark:border-gray-600"
           placeholder="Tên của bạn"
         />
       </div>
-
       <div>
-        <label for="phone" class="block text-sm font-medium mb-1">Số điện thoại</label>
+        <label for="email" class="block text-sm font-medium mb-1">Email</label>
         <input
-          id="phone"
-          type="text"
-          inputmode="tel"
-          v-model.trim="phone"
+          id="email"
+          type="email"
+          inputmode="email"
+          v-model.trim="formData.email"
           required
           class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-green-300 outline-none dark:bg-gray-700 dark:border-gray-600"
-          placeholder="Nhập số điện thoại"
+          placeholder="Nhập email của bạn"
         />
       </div>
 
@@ -79,7 +80,7 @@ const clearError = () => {
         <input
           :type="showPassword ? 'text' : 'password'"
           id="password"
-          v-model.trim="password"
+          v-model.trim="formData.password"
           required
           minlength="6"
           class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring focus:ring-green-300 outline-none dark:bg-gray-700 dark:border-gray-600"
@@ -138,7 +139,7 @@ const clearError = () => {
         <input
           :type="showPassword ? 'text' : 'password'"
           id="confirm-password"
-          v-model.trim="confirmPassword"
+          v-model.trim="formData.confirmPassword"
           required
           minlength="6"
           class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-green-300 outline-none dark:bg-gray-700 dark:border-gray-600"
@@ -151,7 +152,7 @@ const clearError = () => {
         :disabled="auth.loading"
         class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
       >
-        <span v-if="auth.loading">Đang đăng ký...</span>
+        <span v-if="auth.loading" class="pointer-events-none">Đang đăng ký...</span>
         <span v-else>Đăng ký</span>
       </button>
     </form>

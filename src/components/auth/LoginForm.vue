@@ -2,9 +2,9 @@
 import { ref } from 'vue'
 import { useModalStore } from '@/stores/modalStore'
 import { useUserStore } from '@/stores/userStore'
-import SocialLoginButtons from './SocialLoginButtons.vue' // 🚨 Import Social Buttons
+import SocialLoginButtons from './SocialLoginButtons.vue'
 
-const phone = ref('')
+const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
 
@@ -12,16 +12,13 @@ const modal = useModalStore()
 const auth = useUserStore()
 
 const handleLogin = async () => {
-  // 🚨 Cần dùng try/catch để bắt lỗi từ Store (authApi)
   try {
-    await auth.login(phone.value, password.value)
-    if (auth.user?.role === 'user') {
-      modal.closeLoginModal()
-    } else{
-      modal.closeLoginModal()
-    }
+    await auth.login(email.value, password.value)
+
+    // Đóng modal khi đăng nhập thành công
+    modal.closeLoginModal()
+
   } catch (err) {
-    // Lỗi sẽ được hiển thị ngay bên dưới
     console.error('Lỗi đăng nhập:', err.message)
   }
 }
@@ -39,15 +36,15 @@ const handleLogin = async () => {
 
     <form @submit.prevent="handleLogin" class="space-y-4">
       <div>
-        <label for="phone" class="block text-sm font-medium mb-1">Số điện thoại</label>
+        <label for="phone" class="block text-sm font-medium mb-1">Email</label>
         <input
-          id="phone"
+          id="email"
           type="text"
-          inputmode="tel"
-          v-model.trim="phone"
+          inputmode="text"
+          v-model.trim="email"
           required
           class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-green-300 outline-none"
-          placeholder="Nhập số điện thoại"
+          placeholder="Nhập email ví dụ abc@example.com"
         />
       </div>
 
@@ -112,7 +109,7 @@ const handleLogin = async () => {
         :disabled="auth.loading"
         class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
       >
-        <span v-if="auth.loading">Đang đăng nhập...</span>
+        <span v-if="auth.loading" class="pointer-events-none">Đang đăng nhập...</span>
         <span v-else>Đăng nhập</span>
       </button>
     </form>

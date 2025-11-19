@@ -1,202 +1,286 @@
-// src/stores/userStore.js (STORE CHÍNH CHO AUTH & USER DATA)
-import { ref, computed } from 'vue'
+// src/stores/userStore.js
+import { ref, computed, nextTick } from 'vue'
 import { defineStore } from 'pinia'
-import authApi from '@/api/authApi'
-import cartApi from '@/api/cartApi'
 import router from '@/router'
-import { useCartStore } from './cartStore'
+import * as authApi from '@/api/authApi'
+import api from '@/api/index' 
 import { useModalStore } from './modalStore'
 
 export const useUserStore = defineStore('user', () => {
-  // 🧩 STATE
-  const user = ref(JSON.parse(localStorage.getItem('user')) || null)
-  const token = ref(localStorage.getItem('token') || null) // Giữ token riêng
+  // state (persist token/user to localStorage for page reload)
+  const user = ref(JSON.parse(localStorage.getItem('user') || 'null'))
+  const token = ref(localStorage.getItem('token') || null)
   const loading = ref(false)
   const error = ref(null)
-
-  // 🚨 ADMIN STATE
-  const allUsers = ref([]) // Danh sách tất cả người dùng cho Admin
+  const allUsers = ref([])
   const usersLoading = ref(false)
+  const totalUsersCount = ref(0)
 
-  // 🔎 GETTERS
-  const isLoggedIn = computed(() => !!user.value && !!token.value)
-  const isAdmin = computed(() => user.value?.role === 'admin') // Tích hợp logic isAdmin
+  const modalStore = useModalStore()
 
-  // 🧭 HELPER FUNCTIONS (Logic quản lý trạng thái user nội bộ)
-  const setAuthData = (userData) => {
-    user.value = userData
-    token.value = userData.token || 'mock_token'
-    localStorage.setItem('user', JSON.stringify(userData))
-    localStorage.setItem('token', token.value)
+  // computed
+  const isLoggedIn = computed(() => !!token.value)
+  // If backend returns role_id numeric use that; else if string role -> handle both
+  const isAdmin = computed(() => {
+    if (!user.value) return false
+    if ('role_id' in user.value) return user.value.role_id === 2
+    if (user.value.role) return String(user.value.role).toLowerCase() === 'admin'
+    return false
+  })
+
+  // helpers for localStorage + token header cleanup
+  function persistAuthData(userData, tokenData) {
+    user.value = userData ?? null
+    token.value = tokenData ?? null
+    if (userData) localStorage.setItem('user', JSON.stringify(userData))
+    else localStorage.removeItem('user')
+    if (tokenData) localStorage.setItem('token', tokenData)
+    else localStorage.removeItem('token')
   }
 
-  const clearAuthData = () => {
+  function clearAuthDataLocal() {
     user.value = null
     token.value = null
     localStorage.removeItem('user')
     localStorage.removeItem('token')
+    // also clear any default header (defensive)
+    try {
+      if (api.defaults && api.defaults.headers) {
+        delete api.defaults.headers.common.Authorization
+      }
+    } catch (e) {
+      // ignore
+    }
   }
 
-  // 📦 ACTIONS
-
-  /** 1. ĐĂNG NHẬP */
-  const login = async (phone, password) => {
+  /**
+   * fetchCurrentUser: gọi /users/me để lấy thông tin user.
+   * Nếu token không hợp lệ sẽ ném lỗi để caller xử lý.
+   */
+  async function fetchCurrentUser() {
+    if (!token.value) return null
     loading.value = true
     error.value = null
     try {
-      // 1. GỌI API LOGIN VÀ LƯU USER DATA
-      const userData = await authApi.login(phone, password)
+      const userData = await authApi.getMe()
+      // nếu getMe trả về object với wrapper { data: {...} }
+      const payload = userData?.data ?? userData
+      persistAuthData(payload, token.value)
+      return payload
+    } catch (err) {
+      // token không hợp lệ hoặc lỗi khác
+      // logout local and bubble error
+      await safeLogout({ redirect: false })
+      error.value = err?.message || 'Không thể xác thực'
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
 
-      const cartStore = useCartStore()
-      const modalStore = useModalStore() // 🚨 TẠO INSTANCE MODAL STORE
+  /**
+   * login: gọi authApi.login, lưu token, lấy user, sync cart
+   * @param {string} emailOrUsername
+   * @param {string} password
+   */
+  async function login(emailOrUsername, password) {
+    loading.value = true
+    error.value = null
+    try {
+      // 1) gọi login API -> nhận token string
+      const tokenString = await authApi.login({ email: emailOrUsername, password })
+      if (!tokenString) throw new Error('Không nhận được token từ server.')
 
-      const guestItems = [...cartStore.cartItems]
+      // 2) lưu token ngay (để interceptor dùng)
+      token.value = tokenString
+      localStorage.setItem('token', tokenString)
 
-      // 2. TẢI GIỎ HÀNG USER TỪ SERVER (Giỏ hàng hiện tại = Giỏ hàng Server)
-      await cartStore.loadCartFromServer(userData.id)
-
-      // 3. HỢP NHẤT: Thêm Guest Items vào Cart đã tải từ Server
-      let mergedCount = 0
-      guestItems.forEach((item) => {
-        // addToCart sẽ tự động cộng dồn số lượng nếu trùng
-        cartStore.addToCart(item)
-        mergedCount++
-      })
-
-      // 4. ĐỒNG BỘ: Lưu Giỏ hàng đã hợp nhất lên Server
-      await cartStore.syncCartToServer(userData.id)
-
-      // 🚨 BƯỚC KHẮC PHỤC 5: GỬI THÔNG BÁO CHO NGƯỜI DÙNG
-      if (mergedCount > 0) {
-        const userName = userData.name || userData.phone || 'bạn'
-        const message = `Chào ${userName}! Giỏ hàng đã được hợp nhất thành công (${mergedCount} sản phẩm mới).`
-        modalStore.showToast(message, 'success', 5000) // Hiển thị 5 giây
+      // 3) lấy thông tin user bằng token
+      const userPayload = await fetchCurrentUser()
+      if (!userPayload) throw new Error('Không thể lấy thông tin người dùng sau khi đăng nhập.')
+      await nextTick()
+      // 4) Sync cart: tải cart từ server (nếu store có method fetchCart)
+      try {
+        const { useCartStore } = await import('@/stores/cartStore')
+        const cartStore = useCartStore()
+        if (cartStore?.fetchCart) {
+          await cartStore.fetchCart()
+        }
+      } catch (e) {
+        // không bắt buộc — chỉ log
+        console.warn('Không thể sync giỏ hàng khi login:', e)
       }
 
-      // 6. LƯU AUTH DATA VÀ ĐIỀU HƯỚNG
-      setAuthData(userData)
-      if (userData.role === 'admin') {
-        router.push('/admin')
+      // 5) show toast và điều hướng (caller/modal store có thể hiển thị)
+      // lưu auth (user + token) đã được thực hiện trong fetchCurrentUser (persistAuthData)
+      // redirect
+      if (isAdmin.value) {
+        router.push('/admin').catch(() => {})
       } else {
-        router.push('/') // hoặc router.go(-1)
+        router.push('/').catch(() => {})
       }
+
+      return userPayload
     } catch (err) {
-      error.value = err.message || 'Đăng nhập thất bại'
-      throw err
+      // chuẩn hoá lỗi
+      const message = err?.message || err?.response?.data || 'Đăng nhập thất bại'
+      error.value = message
+      clearAuthDataLocal()
+      throw new Error(message)
     } finally {
       loading.value = false
     }
   }
 
-  /** 2. ĐĂNG KÝ */
-  const register = async (name, phone, password) => {
+  /**
+   * register: gọi API register (trả về user hoặc success), sau đó login
+   * registerDto should include email & password
+   */
+  async function register(registerDto) {
     loading.value = true
     error.value = null
     try {
-      await authApi.register({ name, phone, password, role: 'user' })
-      await login(phone, password) // Tự động đăng nhập sau khi đăng ký thành công
+      await authApi.register(registerDto)
+      // auto-login after register
+      const email = registerDto.email ?? registerDto.username
+      await login(email, registerDto.password)
     } catch (err) {
-      error.value = err.message || 'Đăng ký thất bại'
-      throw err
+      const message = err?.message || err?.response?.data || 'Đăng ký thất bại'
+      error.value = message
+      throw new Error(message)
     } finally {
       loading.value = false
     }
   }
 
-  /** 3. ĐĂNG XUẤT */
-  const logout = async () => {
-    // Đổi tên từ signOut thành logout
-    // 🚨 BƯỚC MỚI: ĐỒNG BỘ GIỎ HÀNG TRƯỚC KHI ĐĂNG XUẤT
-    if (user.value) {
-      const cartStore = useCartStore()
-      await cartStore.syncCartToServer(user.value.id)
-      cartStore.clearCart() // Reset giỏ hàng client side
-    }
-
-    clearAuthData() // Xóa user, token
-    router.push('/')
+  /**
+   * logout: public function. optionally redirect to home.
+   */
+  async function logout({ redirect = true } = {}) {
+    // call safeLogout wrapper which resets cart + auth
+    await safeLogout({ redirect })
   }
-  /** 4. USER: CẬP NHẬT THÔNG TIN CÁ NHÂN/ĐỊA CHỈ */
-  const updateProfileAction = async (updateData) => {
+
+  // internal helper that resets cart state and clears auth safely
+  async function safeLogout({ redirect = true } = {}) {
     loading.value = true
-    error.value = null
     try {
-      const updatedUser = await authApi.updateProfile(user.value.id, updateData)
+      // reset cart store if exists
+      try {
+        const { useCartStore } = await import('@/stores/cartStore')
+        const cartStore = useCartStore()
+        if (cartStore?.resetCartState) {
+          cartStore.resetCartState()
+        } else {
+          // fallback: clear cart object if present
+          cartStore.cart = null
+        }
+      } catch (e) {
+        // ignore if cart store not available
+      }
 
-      // 💡 Quan trọng: Cập nhật user state cục bộ và localStorage
-      setAuthData(updatedUser)
+      // clear auth data locally
+      clearAuthDataLocal()
 
-      modalStore.showToast('Cập nhật hồ sơ thành công!', 'success')
-      return updatedUser
-    } catch (err) {
-      modalStore.showToast(err.message || 'Cập nhật hồ sơ thất bại.', 'error')
-      throw err
+      if (redirect) {
+        router.push('/').catch(() => {})
+      }
     } finally {
       loading.value = false
     }
   }
 
-  // --- ACTIONS ADMIN ---
+  async function fetchUsersForAdmin() {
+    if (allUsers.value.length) return // Tránh gọi lại
 
-  /** 5. ADMIN: TẢI DANH SÁCH TẤT CẢ NGƯỜI DÙNG */
-  const fetchUsersForAdmin = async (params = {}) => {
-    if (usersLoading.value) return
     usersLoading.value = true
-    error.value = null
     try {
-      const usersList = await authApi.fetchUsers(params)
-      allUsers.value = usersList
-    } catch (err) {
-      error.value = err.message || 'Lỗi khi tải danh sách người dùng.'
-      modalStore.showToast(error.value, 'error')
+      // Giả định bạn có hàm authApi.fetchUsersForAdmin()
+      const users = await authApi.fetchUsersForAdmin()
+      allUsers.value = users
+    } catch (e) {
+      console.error('Lỗi tải danh sách users:', e)
     } finally {
       usersLoading.value = false
     }
   }
 
-  /** 6. ADMIN: CẬP NHẬT DỮ LIỆU/VAI TRÒ CỦA NGƯỜI DÙNG BẤT KỲ */
-  const updateUserDataAction = async (userId, updateData) => {
-    usersLoading.value = true // Sử dụng usersLoading để khóa trang quản lý
+  // ⭐️ ACTION MỚI CHO ADMIN: Lấy danh sách tất cả người dùng
+  async function fetchAllUsersForAdminAction(params = {}) {
+    loading.value = true
     error.value = null
+
     try {
-      const updatedUser = await authApi.updateUserData(userId, updateData)
-
-      // Cập nhật State: Tìm và thay thế user trong allUsers
-      const index = allUsers.value.findIndex((u) => String(u.id) === String(userId))
-      if (index !== -1) {
-        allUsers.value[index] = updatedUser
-      }
-
-      modalStore.showToast(`Cập nhật người dùng ID ${userId} thành công.`, 'success')
-      return updatedUser
+      // 1. Gọi API để lấy danh sách
+      const response = await authApi.fetchAllUsersForAdmin(params)
+      
+      // 2. Cập nhật State
+      allUsers.value = response.data
+      totalUsersCount.value = response.totalCount ? parseInt(response.totalCount) : response.data.length
+      
+      return allUsers.value
     } catch (err) {
-      modalStore.showToast('Cập nhật người dùng thất bại.', 'error')
+      console.error('UserStore: Lỗi tải danh sách người dùng Admin:', err)
+      error.value = 'Lỗi khi tải danh sách người dùng quản trị.'
+      modalStore.showToast(error.value, 'error')
       throw err
     } finally {
-      usersLoading.value = false
+      loading.value = false
     }
   }
 
-  // 🔁 EXPORT
+  // ⭐️ ACTION MỚI CHO ADMIN/User: Cập nhật thông tin/vai trò/trạng thái người dùng
+  async function updateUserAction(userId, updateDto) {
+    loading.value = true
+    error.value = null
+
+    try {
+      // 1. Gọi API cập nhật
+      const updatedUser = await authApi.updateUserRoleAndStatus(userId, updateDto)
+
+      // 2. Cập nhật State: Tìm và thay thế người dùng trong allUsers (cho màn hình Admin)
+      const index = allUsers.value.findIndex((u) => String(u.public_id) === String(userId) || String(u.id) === String(userId))
+      if (index !== -1) {
+        // Cập nhật dữ liệu người dùng
+        allUsers.value[index] = { ...allUsers.value[index], ...updatedUser }
+      }
+
+      // 3. Nếu người dùng đang tự cập nhật mình, cập nhật luôn state `user` hiện tại
+      if (user.value && (String(user.value.public_id) === String(userId) || String(user.value.id) === String(userId))) {
+          // Cập nhật thông tin user hiện tại và lưu vào localStorage
+          persistAuthData({ ...user.value, ...updatedUser }, token.value)
+      }
+
+      modalStore.showToast(`Cập nhật người dùng #${userId} thành công.`, 'success')
+      return updatedUser
+    } catch (err) {
+      console.error('UserStore: Lỗi cập nhật người dùng:', err)
+      error.value = 'Không thể cập nhật thông tin người dùng.'
+      modalStore.showToast(error.value, 'error')
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+  // Expose store API
   return {
-    // State & Refs
     user,
     token,
     loading,
     error,
-    allUsers,
-    usersLoading,
-
-    // Getters
     isLoggedIn,
     isAdmin,
-
-    // Actions
-    login, // Tên hàm chính thức
+    allUsers,
+    usersLoading,
+    totalUsersCount,
+    login,
     logout,
     register,
+    fetchCurrentUser,
+    persistAuthData,
+    clearAuthDataLocal,
     fetchUsersForAdmin,
-    updateUserDataAction,
-    updateProfileAction,
+    fetchAllUsersForAdminAction,
+    updateUserAction,
   }
 })

@@ -1,3 +1,4 @@
+// src/stores/modalStore.js
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -5,34 +6,37 @@ export const useModalStore = defineStore('modal', () => {
   const isLoginModalOpen = ref(false)
   const isMobileMenuOpen = ref(false)
 
-  function openLoginModal() {
-    isLoginModalOpen.value = true
-  }
-
-  function closeLoginModal() {
-    isLoginModalOpen.value = false
-  }
-
-  const openMobileMenu = () => {
-    isMobileMenuOpen.value = true
-  }
-  const closeMobileMenu = () => {
-    isMobileMenuOpen.value = false
-  }
-
   const toastMessage = ref(null)
   const isToastVisible = ref(false)
   const toastType = ref('success') // 'success', 'error', 'info'
+  let toastTimer = null
 
-  const showToast = (message, type = 'success', duration = 3000) => {
+  function openLoginModal() {
+    isLoginModalOpen.value = true
+  }
+  function closeLoginModal() {
+    isLoginModalOpen.value = false
+  }
+  function openMobileMenu() {
+    isMobileMenuOpen.value = true
+  }
+  function closeMobileMenu() {
+    isMobileMenuOpen.value = false
+  }
+
+  function showToast(message, type = 'success', duration = 3000) {
+    if (toastTimer) {
+      clearTimeout(toastTimer)
+      toastTimer = null
+    }
     toastMessage.value = message
     toastType.value = type
     isToastVisible.value = true
 
-    // Tự động ẩn sau 3 giây
-    setTimeout(() => {
+    toastTimer = setTimeout(() => {
       isToastVisible.value = false
       toastMessage.value = null
+      toastTimer = null
     }, duration)
   }
 
@@ -46,6 +50,6 @@ export const useModalStore = defineStore('modal', () => {
     toastMessage,
     isToastVisible,
     toastType,
-    showToast,
+    showToast
   }
 })

@@ -1,4 +1,4 @@
-import http from './http'
+import api from './index'
 
 const STORES_ENDPOINT = '/stores'
 
@@ -11,7 +11,7 @@ const storeApi = {
   // READ
   async fetchStores() {
     try {
-      const { data } = await http.get('/stores')
+      const { data } = await api.get('/stores')
       return data
     } catch (err) {
       handleError(err, 'stores')
@@ -25,7 +25,7 @@ const storeApi = {
    */
   async createStore(storeData) {
     try {
-      const { data } = await http.post(STORES_ENDPOINT, storeData)
+      const { data } = await api.post(STORES_ENDPOINT, storeData)
       return data
     } catch (err) {
       handleError(err, 'tạo chi nhánh mới')
@@ -39,7 +39,7 @@ const storeApi = {
    */
   async updateStore(id, storeData) {
     try {
-      const { data } = await http.put(`${STORES_ENDPOINT}/${id}`, storeData)
+      const { data } = await api.put(`${STORES_ENDPOINT}/${id}`, storeData)
       return data
     } catch (err) {
       handleError(err, `cập nhật chi nhánh ID ${id}`)
@@ -52,7 +52,7 @@ const storeApi = {
    */
   async deleteStore(id) {
     try {
-      await http.delete(`${STORES_ENDPOINT}/${id}`)
+      await api.delete(`${STORES_ENDPOINT}/${id}`)
       return true
     } catch (err) {
       handleError(err, `xóa chi nhánh ID ${id}`)

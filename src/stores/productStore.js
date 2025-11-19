@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import productApi from '@/api/productApi' // Import Service
+import { useModalStore } from './modalStore'
 
 export const useProductStore = defineStore('productStore', () => {
   // 🧩 STATE
@@ -12,6 +13,9 @@ export const useProductStore = defineStore('productStore', () => {
   const iceLevels = ref([])
   const productLoading = ref(false) // Thêm biến loading
   const productError = ref(null)
+  
+  // Modal store for notifications
+  const modalStore = useModalStore()
 
   // 📦 ACTIONS
   // 1. READ (Đã có, giữ nguyên, nhưng đổi tên thành fetchAllData cho rõ ràng)

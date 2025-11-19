@@ -1,59 +1,84 @@
-import http from './http' // Sử dụng http client chung
+// src/api/cartApi.js (NỘI DUNG MỚI)
+import api from './index'
+
+// ⭐️ Endpoint C# của chúng ta là /api/cart
+const API = '/cart'
 
 const cartApi = {
   /**
-   * Đồng bộ giỏ hàng lên server.
+   * 1. Lấy giỏ hàng hiện tại (GET /api/cart/me)
+   * (API C# trả về CartReadDto)
    */
-  async syncCartToServer(userId, items) {
-    if (!userId) {
-      console.warn('Không có userId, bỏ qua đồng bộ giỏ hàng.')
-      return
-    }
-
-    // 🚨 Trong ứng dụng thực tế, đây thường là PUT/PATCH/POST để cập nhật giỏ hàng theo userId.
-    // Với JSON Server, ta chỉ POST/PUT/PATCH vào 1 endpoint chung.
+  async getCart() {
     try {
-      // Giả lập logic: tìm giỏ hàng cũ và cập nhật (hoặc tạo mới)
-      // Dùng endpoint chung /carts cho JSON Server
-      const { data: existingCarts } = await http.get(`/carts?userId=${userId}`)
-
-      if (existingCarts.length > 0) {
-        // Cập nhật giỏ hàng đã tồn tại (PUT/PATCH)
-        const cartId = existingCarts[0].id
-        await http.patch(`/carts/${cartId}`, {
-          items: items,
-          updatedAt: new Date().toISOString(),
-        })
-      } else {
-        // Tạo giỏ hàng mới (POST)
-        await http.post('/carts', {
-          userId,
-          items: items,
-          updatedAt: new Date().toISOString(),
-        })
-      }
+      const { data } = await api.get(`${API}/me`)
+      return data
     } catch (err) {
-      console.error('❌ Lỗi đồng bộ giỏ hàng:', err)
-      throw new Error('Lỗi đồng bộ giỏ hàng lên máy chủ.')
+      console.error('❌ Lỗi tải giỏ hàng:', err)
+      throw new Error('Lỗi tải giỏ hàng từ máy chủ.')
     }
   },
 
   /**
-   * Tải giỏ hàng từ server.
+   * 2. Thêm một món vào giỏ (POST /api/cart/add-item)
+   * @param {object} itemCreateDto (Phải khớp với CartItemCreateDto.cs)
+   * (API C# trả về CartReadDto MỚI)
    */
-  async loadCartFromServer(userId) {
-    if (!userId) return null
-
+  async addItem(itemCreateDto) {
     try {
-      // Tải giỏ hàng của user
-      const { data } = await http.get(`/carts?userId=${userId}`)
-      if (data.length > 0) {
-        return data[0].items || []
-      }
-      return []
+      const { data } = await api.post(`${API}/add-item`, itemCreateDto)
+      return data
     } catch (err) {
-      console.error('❌ Lỗi tải giỏ hàng:', err)
-      throw new Error('Lỗi tải giỏ hàng từ máy chủ.')
+      console.error('❌ Lỗi thêm vào giỏ hàng:', err)
+      throw new Error(err.response?.data || 'Lỗi thêm sản phẩm vào giỏ hàng.')
+    }
+  },
+
+  /**
+   * 3. Xóa một món khỏi giỏ (DELETE /api/cart/remove-item/{id})
+   * @param {number} cartItemId (ID của CartItem)
+   * (API C# trả về CartReadDto MỚI)
+   */
+  async removeItem(cartItemId) {
+    try {
+      const { data } = await api.delete(`${API}/remove-item/${cartItemId}`)
+      return data
+    } catch (err) {
+      console.error('❌ Lỗi xóa khỏi giỏ hàng:', err)
+      throw new Error(err.response?.data || 'Lỗi xóa sản phẩm khỏi giỏ hàng.')
+    }
+  },
+
+  /**
+   * 4. Xóa sạch giỏ hàng (DELETE /api/cart/clear)
+   * (API C# trả về CartReadDto MỚI (rỗng))
+   */
+  async clearCart() {
+    try {
+      const { data } = await api.delete(`${API}/clear`)
+      return data
+    } catch (err) {
+      console.error('❌ Lỗi xóa sạch giỏ hàng:', err)
+      throw new Error(err.response?.data || 'Lỗi xóa sạch giỏ hàng.')
+    }
+  },
+
+  /**
+   * 5. Cập nhật số lượng (PUT /api/cart/update-item)
+   * @param {number} cartItemId 
+   * @param {number} quantity 
+   */
+  async updateItem(cartItemId, { quantity }) {
+    try {
+      // Gửi đúng cấu trúc CartItemUpdateDto
+      const { data } = await api.put(`${API}/update-item`, { 
+        cartItemId: cartItemId, 
+        quantity: quantity 
+      })
+      return data
+    } catch (err) {
+      console.error('❌ Lỗi cập nhật số lượng:', err)
+      throw new Error(err.response?.data || 'Lỗi cập nhật số lượng.')
     }
   },
 }

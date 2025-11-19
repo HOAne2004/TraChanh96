@@ -1,5 +1,5 @@
-// Dùng cho các dữ liệu cấu hình/tĩnh.
-import http from './http'
+// src/api/appApi.js
+import api from './index'
 
 const handleError = (error, name) => {
   console.error(`❌ Lỗi khi fetch ${name}:`, error.message)
@@ -9,7 +9,7 @@ const handleError = (error, name) => {
 const appApi = {
   async fetchFooterInfo() {
     try {
-      const { data } = await http.get('/footerInfo')
+      const { data } = await api.get('/footerInfo')
       return data
     } catch (err) {
       handleError(err, 'footerInfo')
@@ -17,7 +17,7 @@ const appApi = {
   },
   async fetchStorePolicies() {
     try {
-      const { data } = await http.get('/storePolicies')
+      const { data } = await api.get('/storePolicies')
       return data
     } catch (err) {
       handleError(err, 'storePolicies')
@@ -25,7 +25,7 @@ const appApi = {
   },
   async fetchCarousel() {
     try {
-      const { data } = await http.get('/carousel')
+      const { data } = await api.get('/carousel')
       return data
     } catch (error) {
       console.error('❌ Lỗi khi fetch carousel:', error.message)
@@ -34,7 +34,7 @@ const appApi = {
   },
   async getAppConfig() {
     try {
-      const { data } = await http.get('/appConfig')
+      const { data } = await api.get('/appConfig')
       return data
     } catch (error) {
       console.error('❌ Lỗi khi fetch appConfig:', error.message)

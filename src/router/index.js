@@ -6,8 +6,6 @@ import AdminLayout from '@/layouts/AdminLayout.vue'
 
 // User
 import HomeView from '@/views/customer/HomeView.vue'
-import OrderDetailView from '@/views/customer/OrderDetailView.vue'
-
 const ProductsView = () => import('@/views/customer/ProductsView.vue') //lazy load
 const AboutUsView = () => import('@/views/customer/AboutUsView.vue')
 const NewsView = () => import('@/views/customer/NewsView.vue')
@@ -18,7 +16,20 @@ const CheckoutView = () => import('@/views/customer/CheckoutView.vue')
 const ProfileView = () => import('@/views/customer/ProfileView.vue')
 
 // Admin
-const AdminDashboard = () => import('@/views/admin/Dashboard.vue')
+const AdminDashboard = () => import('@/views/admin/AdminDashboardView.vue')
+const AdminProductsView = () => import('@/views/admin/AdminProductsView.vue')
+const AdminCategoriesView = () => import('@/views/admin/AdminCategoriesView.vue')
+const AdminOptionsView = () => import('@/views/admin/AdminOptionsView.vue')
+const AdminUsersView = () => import('@/views/admin/AdminUsersView.vue')
+const AdminOrdersView = () => import('@/views/admin/AdminOrdersView.vue')
+const AdminVouchersView = () => import('@/views/admin/AdminVouchersView.vue')
+const AdminStoresView = () => import('@/views/admin/AdminStoresView.vue')
+const AdminNewsView = () => import('@/views/admin/AdminNewsView.vue')
+const AdminMembershipLevelsView = () => import('@/views/admin/AdminMembershipLevelsView.vue')
+const AdminReviewsView = () => import('@/views/admin/AdminReviewsView.vue')
+const AdminGeneralSettingsView = () => import('@/views/admin/AdminGeneralSettingsView.vue')
+const AdminPoliciesView = () => import('@/views/admin/AdminPoliciesView.vue')
+const AdminPaymentsView = () => import('@/views/admin/AdminPaymentsView.vue')
 
 const routes = [
   {
@@ -61,7 +72,7 @@ const routes = [
         props: true,
       },
 
-      {path: 'profile', name:'profile', component: ProfileView},
+      { path: 'profile', name: 'profile', component: ProfileView },
 
       // 🚨 ROUTES XÁC THỰC MỚI
       { path: 'register', name: 'register', component: RegisterView }, // Đăng ký
@@ -72,8 +83,41 @@ const routes = [
     path: '/admin',
     component: AdminLayout,
     meta: { requiresAuth: true, role: 'admin' },
-    children: [{ path: '', name: 'admin.dashboard', component: AdminDashboard }],
+    children: [
+      { path: '', name: 'admin.dashboard', component: AdminDashboard },
+      // Sản phẩm & Danh mục
+      { path: 'products', name: 'admin.products.list', component: AdminProductsView },
+      { path: 'categories', name: 'admin.categories', component: AdminCategoriesView },
+      { path: 'options', name: 'admin.options', component: AdminOptionsView },
+      { path: 'vouchers', name: 'admin.vouchers', component: AdminVouchersView },
+
+      // Vận hành
+      { path: 'orders', name: 'admin.orders', component: AdminOrdersView },
+      { path: 'stores', name: 'admin.stores', component: AdminStoresView },
+      { path: 'news', name: 'admin.news', component: AdminNewsView },
+      { path: 'reviews', name: 'admin.reviews.moderation', component: AdminReviewsView },
+      { path: 'users', name: 'admin.users.list', component: AdminUsersView },
+
+      // Cấu hình
+      {
+        path: 'memberships/levels',
+        name: 'admin.memberships.levels',
+        component: AdminMembershipLevelsView,
+      },
+      {
+        path: 'settings/general',
+        name: 'admin.settings.general',
+        component: AdminGeneralSettingsView,
+      },
+      { path: 'settings/policies', name: 'admin.settings.policies', component: AdminPoliciesView },
+      { path: 'settings/payments', name: 'admin.settings.payments', component: AdminPaymentsView },
+    ],
   },
+  {
+    path: '/:catchAll(.*)',
+    name: 'NotFound',
+    component: () => import('@/views/customer/NotFoundView.vue'),
+},
 ]
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -91,9 +135,17 @@ router.beforeEach((to, from, next) => {
     if (to.path.startsWith('/admin')) {
       return next('/') // Chuyển về Home
     }
-  } else if (to.meta.role && auth.user?.role !== to.meta.role) {
-    // sai role => quay về home
-    next('/')
+  } else if (to.meta.role && auth.user?.role) {
+    const requiredRole = String(to.meta.role).toLowerCase()
+    const userRole = String(auth.user.role).toLowerCase()
+
+    if (userRole !== requiredRole) {
+      // Sai role => quay về home
+      console.warn(
+        `Redirecting: User role (${userRole}) does not match required role (${requiredRole})`,
+      )
+      return next('/')
+    }
   }
 
   next()

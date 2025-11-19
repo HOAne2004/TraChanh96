@@ -1,8 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-// 🚨 Import API service
-import { placeOrder, fetchUserOrders } from '@/api/orderApi'
+import {
+  placeOrder,
+  fetchUserOrders,
+  fetchAllOrdersForAdmin, // Thêm
+  updateOrderStatus, // Thêm
+} from '@/api/orderApi'
 import { useModalStore } from './modalStore'
+
 // Giả định bạn có userStore để lấy token hoặc userId nếu cần
 // import { useUserStore } from './userStore'
 

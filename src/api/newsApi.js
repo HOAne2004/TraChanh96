@@ -1,4 +1,4 @@
-import http from './http'
+import api from './index'
 
 const NEWS_ENDPOINT = '/news'
 
@@ -10,7 +10,7 @@ const handleError = (error, name) => {
 const newsApi = {
   async fetchNews() {
     try {
-      const { data } = await http.get('/news')
+      const { data } = await api.get('/news')
       return data
     } catch (err) {
       handleError(err, 'news')
@@ -27,7 +27,7 @@ const newsApi = {
     try {
       // Thêm trường createdAt giả lập
       const newNews = { ...newsData, createdAt: new Date().toISOString() }
-      const { data } = await http.post(NEWS_ENDPOINT, newNews)
+      const { data } = await api.post(NEWS_ENDPOINT, newNews)
       return data
     } catch (err) {
       handleError(err, 'tạo tin tức mới')
@@ -42,7 +42,7 @@ const newsApi = {
   async updateNews(id, newsData) {
     try {
       // Sử dụng PUT để cập nhật toàn bộ resource
-      const { data } = await http.put(`${NEWS_ENDPOINT}/${id}`, newsData)
+      const { data } = await api.put(`${NEWS_ENDPOINT}/${id}`, newsData)
       return data
     } catch (err) {
       handleError(err, `cập nhật tin tức ID ${id}`)
@@ -55,7 +55,7 @@ const newsApi = {
    */
   async deleteNews(id) {
     try {
-      await http.delete(`${NEWS_ENDPOINT}/${id}`)
+      await api.delete(`${NEWS_ENDPOINT}/${id}`)
       return true
     } catch (err) {
       handleError(err, `xóa tin tức ID ${id}`)

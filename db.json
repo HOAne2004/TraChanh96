@@ -15,11 +15,7 @@
       "policyName": "Chính sách giao hàng mặc định",
       "prepareTime": "15–20 phút",
       "deliveryRadius": "10km quanh Đại học Công nghiệp",
-      "deliveryAreas": [
-        "Bắc Từ Liêm",
-        "Cầu Giấy",
-        "Nam Từ Liêm"
-      ],
+      "deliveryAreas": ["Bắc Từ Liêm", "Cầu Giấy", "Nam Từ Liêm"],
       "deliveryTimeEstimate": "30–45 phút",
       "deliveryFee": 15000,
       "freeShipThreshold": 200000,
@@ -66,11 +62,7 @@
       "categoryId": 1,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "2",
@@ -84,11 +76,7 @@
       "categoryId": 2,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "3",
@@ -102,11 +90,7 @@
       "categoryId": 1,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "4",
@@ -120,11 +104,7 @@
       "categoryId": 1,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "5",
@@ -138,11 +118,7 @@
       "categoryId": 4,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "6",
@@ -156,11 +132,7 @@
       "categoryId": 3,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "7",
@@ -174,11 +146,7 @@
       "categoryId": 3,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "8",
@@ -192,11 +160,7 @@
       "categoryId": 5,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "9",
@@ -210,11 +174,7 @@
       "categoryId": 5,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "10",
@@ -228,11 +188,7 @@
       "categoryId": 6,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "11",
@@ -246,11 +202,7 @@
       "categoryId": 6,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "12",
@@ -264,11 +216,7 @@
       "categoryId": 1,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "13",
@@ -282,11 +230,7 @@
       "categoryId": 7,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "14",
@@ -300,11 +244,7 @@
       "categoryId": 7,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "15",
@@ -318,11 +258,7 @@
       "categoryId": 8,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "16",
@@ -336,11 +272,7 @@
       "categoryId": 8,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
     },
     {
       "id": "17",
@@ -354,11 +286,21 @@
       "categoryId": 9,
       "sizeId": 1,
       "sugarLevelId": 1,
-      "toppingIds": [
-        1,
-        2,
-        3
-      ]
+      "toppingIds": [1, 2, 3]
+    },
+    {
+      "id": "642b",
+      "name": "Trà lạnh dưa lưới",
+      "price": 20000,
+      "rating": 5,
+      "sold": 0,
+      "image": "/images/products/default.png",
+      "description": "",
+      "categoryId": 5,
+      "sizeId": 1,
+      "sugarLevelId": 1,
+      "iceLevelId": 1,
+      "toppingIds": []
     }
   ],
   "categories": [
@@ -401,21 +343,24 @@
   ],
   "sizes": [
     {
-      "id": "1",
-      "sizes": [
-        {
-          "label": "S",
-          "extraPrice": 0
-        },
-        {
-          "label": "M",
-          "extraPrice": 5000
-        },
-        {
-          "label": "L",
-          "extraPrice": 8000
-        }
-      ]
+      "id": 1,
+      "label": "S",
+      "extraPrice": 0
+    },
+    {
+      "id": 2,
+      "label": "M",
+      "extraPrice": 5000
+    },
+    {
+      "id": 3,
+      "label": "L",
+      "extraPrice": 8000
+    },
+    {
+      "id": 4,
+      "label": "XL",
+      "extraPrice": 12000
     }
   ],
   "sugarLevels": [
@@ -449,6 +394,10 @@
     {
       "id": "1",
       "levels": [
+        {
+          "label": "ấm",
+          "value": -1
+        },
         {
           "label": "0%",
           "value": 0
@@ -695,11 +644,7 @@
           "categoryId": 1,
           "sizeId": 1,
           "sugarLevelId": 1,
-          "toppingIds": [
-            1,
-            2,
-            3
-          ],
+          "toppingIds": [1, 2, 3],
           "quantity": 3,
           "options": {}
         }

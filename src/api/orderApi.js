@@ -1,4 +1,4 @@
-import http from './http' // 🚨 Đã sử dụng http client (Axios instance)
+import api from './index' 
 
 const ORDERS_ENDPOINT = '/orders' // Endpoint chung cho đơn hàng
 
@@ -19,7 +19,7 @@ export async function placeOrder(orderData) {
 
   try {
     // 🚨 Dùng Axios POST để tạo đơn hàng
-    const response = await http.post(ORDERS_ENDPOINT, finalOrder)
+    const response = await api.post(ORDERS_ENDPOINT, finalOrder)
 
     console.log('API: Đặt hàng thành công! (Axios)')
     return response.data
@@ -43,7 +43,7 @@ export async function fetchUserOrders(userId) {
 
   try {
     // 🚨 Dùng Axios GET để tải đơn hàng của userId cụ thể
-    const response = await http.get(ORDERS_ENDPOINT, {
+    const response = await api.get(ORDERS_ENDPOINT, {
       params: {
         userId: userId,
         _sort: 'createdAt', // Sắp xếp theo ngày tạo (JSON Server)
@@ -69,7 +69,7 @@ export async function fetchUserOrders(userId) {
 export async function fetchAllOrdersForAdmin(params = {}) {
   try {
     // Json-server sẽ tự động xử lý các tham số như _page, _limit, status=...
-    const response = await http.get(ORDERS_ENDPOINT, { params })
+    const response = await api.get(ORDERS_ENDPOINT, { params })
 
     console.log(`API: Tải ${response.data.length} đơn hàng cho Admin thành công.`)
     // 💡 Trả về cả headers để Store có thể lấy X-Total-Count cho phân trang
@@ -92,7 +92,7 @@ export async function fetchAllOrdersForAdmin(params = {}) {
 export async function updateOrderStatus(orderId, newStatus) {
   try {
     // Sử dụng PATCH để chỉ cập nhật trường status
-    const response = await http.patch(`${ORDERS_ENDPOINT}/${orderId}`, {
+    const response = await api.patch(`${ORDERS_ENDPOINT}/${orderId}`, {
       status: newStatus,
       updatedAt: new Date().toISOString(), // Cập nhật thời gian thay đổi
     })

@@ -1,6 +1,11 @@
-import http from './http'
+import api from '.'
 
-const PRODUCTS_ENPOINT = '/products'
+// ⭐️ THAY ĐỔI: Đổi tên biến để rõ ràng hơn
+const PRODUCTS_API = '/products'
+const CATEGORIES_API = '/categories'
+const SIZES_API = '/sizes'
+const SUGAR_LEVELS_API = '/sugarLevels'
+const ICE_LEVELS_API = '/iceLevels'
 
 const handleError = (error, name) => {
   console.error(`❌ Lỗi khi fetch ${name}:`, error.message)
@@ -8,31 +13,47 @@ const handleError = (error, name) => {
 }
 
 const productApi = {
+  /**
+   * Lấy các sản phẩm chính (Đồ uống/Bánh), KHÔNG bao gồm Topping
+   */
   async fetchProducts() {
     try {
-      const { data } = await http.get('/products')
+      // ⭐️ THAY ĐỔI: Lọc để chỉ lấy sản phẩm chính (Giả định type là 'Beverage')
+      // (Bạn cần kiểm tra CSDL của mình xem product_type chính xác là gì)
+      const { data } = await api.get(PRODUCTS_API, {
+        params: { product_type: 'Beverage' }, // Hoặc bất kỳ type nào không phải 'Topping'
+      })
       return data
     } catch (err) {
       handleError(err, 'products')
     }
   },
 
+  /**
+   * Lấy danh mục (Không đổi)
+   */
   async fetchCategories() {
     try {
-      const { data } = await http.get('/categories')
+      // ⭐️ KHÔNG ĐỔI: Endpoint này đã khớp với CategoriesController
+      const { data } = await api.get(CATEGORIES_API)
       return data
     } catch (err) {
       handleError(err, 'categories')
     }
   },
 
+  /**
+   * Lấy tất cả các tùy chọn (Topping, Size, Sugar, Ice)
+   */
   async fetchProductOptions() {
     try {
       const responses = await Promise.all([
-        http.get('/toppings'),
-        http.get('/sizes'),
-        http.get('/sugarLevels'),
-        http.get('/iceLevels'),
+        // ⭐️ THAY ĐỔI: Lấy Topping bằng cách lọc từ /products
+        api.get(PRODUCTS_API, { params: { product_type: 'Topping' } }),
+        // ⭐️ KHÔNG ĐỔI: Các endpoint này đã khớp với C# Controllers
+        api.get(SIZES_API),
+        api.get(SUGAR_LEVELS_API),
+        api.get(ICE_LEVELS_API),
       ])
       return {
         toppings: responses[0].data,
@@ -45,31 +66,31 @@ const productApi = {
     }
   },
 
-  // --- ADMIN CRUD ACTIONS (BỔ SUNG) ---
+  // --- ADMIN CRUD ACTIONS ---
+  // ⭐️ TIN TỐT: Các hàm CRUD này (create, update, delete)
+  // đã hoàn toàn tương thích với ProductsController của C#
+  // (POST /products, PUT /products/{id}, DELETE /products/{id})
+  // => Không cần thay đổi!
 
   /**
    * TẠO: Tạo sản phẩm mới (POST /products)
-   * @param {object} productData - Dữ liệu sản phẩm mới
    */
   async createProduct(productData) {
     try {
-      const { data } = await http.post(PRODUCTS_ENDPOINT, productData)
+      const { data } = await api.post(PRODUCTS_API, productData)
       return data
     } catch (err) {
-      // Đặt tên lỗi rõ ràng để dễ debug ở Store
       handleError(err, 'tạo sản phẩm mới')
     }
   },
 
   /**
    * CẬP NHẬT: Cập nhật thông tin sản phẩm (PUT /products/:id)
-   * @param {string} id - ID sản phẩm
-   * @param {object} productData - Dữ liệu cần cập nhật
    */
   async updateProduct(id, productData) {
     try {
-      // Json-server sử dụng PUT để cập nhật toàn bộ resource
-      const { data } = await http.put(`${PRODUCTS_ENDPOINT}/${id}`, productData)
+      // ⭐️ THAY ĐỔI: Đảm bảo C# Controller (HttpPut) nhận đúng DTO
+      const { data } = await api.put(`${PRODUCTS_API}/${id}`, productData)
       return data
     } catch (err) {
       handleError(err, `cập nhật sản phẩm ID ${id}`)
@@ -78,12 +99,10 @@ const productApi = {
 
   /**
    * XÓA: Xóa sản phẩm (DELETE /products/:id)
-   * @param {string} id - ID sản phẩm
    */
   async deleteProduct(id) {
     try {
-      // Không cần trả về data, chỉ cần xác nhận request thành công
-      await http.delete(`${PRODUCTS_ENDPOINT}/${id}`)
+      await api.delete(`${PRODUCTS_API}/${id}`)
       return true
     } catch (err) {
       handleError(err, `xóa sản phẩm ID ${id}`)
