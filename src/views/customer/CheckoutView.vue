@@ -11,7 +11,7 @@ import { useRouter } from 'vue-router'
 
 // Components
 import NavLink from '@/components/common/NavLink.vue'
-import CheckoutAddressForm from '@/components/customer/checkout/CheckoutAddressForm.vue'
+import CheckoutAddressForm from '@/components/customer/checkout/CheckoutAddressForm_TEMP.vue'
 import CheckoutPaymentMethods from '@/components/customer/checkout/CheckoutPaymentMethods.vue'
 import CheckoutItemList from '@/components/customer/checkout/CheckoutItemList.vue'
 import CheckoutSummary from '@/components/customer/checkout/CheckoutSummary.vue'
