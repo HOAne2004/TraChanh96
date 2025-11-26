@@ -3,9 +3,9 @@ import api from '.'
 // ⭐️ THAY ĐỔI: Đổi tên biến để rõ ràng hơn
 const PRODUCTS_API = '/products'
 const CATEGORIES_API = '/categories'
-const SIZES_API = '/sizes'
-const SUGAR_LEVELS_API = '/sugarLevels'
-const ICE_LEVELS_API = '/iceLevels'
+const SIZES_API = '/Sizes'
+const SUGAR_LEVELS_API = '/SugarLevels'
+const ICE_LEVELS_API = '/IceLevels'
 
 const handleError = (error, name) => {
   console.error(`❌ Lỗi khi fetch ${name}:`, error.message)
@@ -108,6 +108,59 @@ const productApi = {
       handleError(err, `xóa sản phẩm ID ${id}`)
     }
   },
+
+  // ⭐️ CRUD SIZE
+  async createSize(sizeDto) {
+    const { data } = await api.post(SIZES_API, sizeDto)
+    return data
+  },
+  async updateSize(id, sizeDto) {
+    const { data } = await api.put(`${SIZES_API}/${id}`, sizeDto)
+    return data
+  },
+  async deleteSize(id) {
+    await api.delete(`${SIZES_API}/${id}`)
+    return true
+  },
+
+  // ⭐️ CRUD ICE LEVEL
+  async createIceLevel(iceLevelDto) {
+    const { data } = await api.post(ICE_LEVELS_API, iceLevelDto)
+    return data
+  },
+  async updateIceLevel(id, iceLevelDto) {
+    const { data } = await api.put(`${ICE_LEVELS_API}/${id}`, iceLevelDto)
+    return data
+  },
+  async deleteIceLevel(id) {
+    await api.delete(`${ICE_LEVELS_API}/${id}`)
+    return true
+  },
+
+  // ⭐️ CRUD SUGAR LEVEL
+  async createSugarLevel(sugarLevelDto) {
+    const { data } = await api.post(SUGAR_LEVELS_API, sugarLevelDto)
+    return data
+  },
+  async updateSugarLevel(id, sugarLevelDto) {
+    const { data } = await api.put(`${SUGAR_LEVELS_API}/${id}`, sugarLevelDto)
+    return data
+  },
+  async deleteSugarLevel(id) {
+    await api.delete(`${SUGAR_LEVELS_API}/${id}`)
+    return true
+  },
+  // 🆕 API Check Usage cho Option (Size/Sugar/Ice)
+  // type: 'Sizes', 'SugarLevels', 'IceLevels' (khớp tên Controller)
+  async checkOptionUsage(type, id) {
+    try {
+        // Gọi: GET /api/Sizes/1/usage
+        const { data } = await api.get(`/${type}/${id}/usage`)
+        return data.count
+    } catch (error) {
+        return 0; // Nếu lỗi coi như là 0 để không chặn user
+    }
+  }
 }
 
 export default productApi

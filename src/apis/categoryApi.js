@@ -11,9 +11,9 @@ const handleError = (error, name) => {
 /**
  * Lấy danh sách phẳng (GET /api/categories)
  */
-export async function fetchFlatCategories() {
+export async function fetchFlatCategories(params = {}) {
     try {
-        const response = await api.get('/categories')
+        const response = await api.get('/categories', {params})
         return response.data
     } catch (err) {
         handleError(err, 'tải danh mục')
@@ -23,9 +23,9 @@ export async function fetchFlatCategories() {
 /**
  * Lấy danh sách dạng cây (GET /api/categories/tree)
  */
-export async function fetchCategoryTree() {
+export async function fetchCategoryTree(params = {}) {
     try {
-        const response = await api.get('/categories/tree')
+        const response = await api.get('/categories/tree', {params})
         return response.data
     } catch (err) {
         handleError(err, 'tải cây danh mục')
@@ -57,9 +57,9 @@ export async function deleteCategory(id) {
 }
 
 // TODO: Thêm hàm updateCategory và fetchCategoryById
-export async function updateCategory(id) {
+export async function updateCategory(id, categoryDto) {
     try {
-        const response = await api.put(`/categories/${id}`, arguments[1])
+        const response = await api.put(`/categories/${id}`, categoryDto)
         return response.data
     } catch (err) {
         handleError(err, 'cập nhật danh mục')
@@ -75,5 +75,14 @@ export async function fetchCategoryById(id) {
         return response.data
     } catch (err) {
         handleError(err, 'lấy thông tin danh mục')
+    }
+}
+
+export async function checkCategoryUsage(id) {
+    try {
+        const { data } = await api.get(`/categories/${id}/usage`)
+        return data.count
+    } catch (error) {
+        return 0
     }
 }

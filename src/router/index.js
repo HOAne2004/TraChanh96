@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useUIStore } from '@/stores/uiStore'
+//import { useUIStore } from '@/stores/uiStore'
 import { useUserStore } from '@/stores/userStore'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -19,7 +19,7 @@ const ProfileView = () => import('@/views/customer/ProfileView.vue')
 const AdminDashboard = () => import('@/views/admin/AdminDashboardView.vue')
 const AdminProductsView = () => import('@/views/admin/AdminProductsView.vue')
 const AdminCategoriesView = () => import('@/views/admin/AdminCategoriesView.vue')
-const AdminOptionsView = () => import('@/views/admin/AdminOptionsView.vue')
+const AdminOptionsView = () => import('@/views/admin/AdminOptionsManagementView.vue')
 const AdminUsersView = () => import('@/views/admin/AdminUsersView.vue')
 const AdminOrdersView = () => import('@/views/admin/AdminOrdersView.vue')
 const AdminVouchersView = () => import('@/views/admin/AdminVouchersView.vue')

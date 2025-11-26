@@ -4,8 +4,8 @@ import { useUserStore } from '@/stores/userStore'
 
 // 1. ⭐️ Trỏ baseURL đến API C# .NET
 const api = axios.create({
-  baseURL: 'https://localhost:7004/api',
-  timeout: 10000, // Tăng thời gian chờ
+  baseURL: 'https://trachanh96-be-production.up.railway.app/api',
+  timeout: 10000,
   headers: { 'Content-Type': 'application/json' },
 })
 

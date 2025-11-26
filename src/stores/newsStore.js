@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import newsApi from '@/api/newsApi' // Import Service
+import newsApi from '@/apis/newsApi' // Import Service
 import { useModalStore } from './modalStore'
 
 export const useNewsStore = defineStore('newsStore', () => {

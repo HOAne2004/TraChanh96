@@ -70,10 +70,10 @@ const handleChange = (e) => {
       :id="label"
       :value="selectedId"
       @change="handleChange"
-      class="w-full mt-1 p-2 border rounded-md bg-white dark:bg-gray-700 dark:text-gray-100"
+      class="w-full z-50 mt-1 p-2 border rounded-md bg-white dark:bg-gray-700 dark:text-gray-100"
       ref="selectRef"
     >
-      <option 
+      <option
         v-for="option in flattenedOptions" 
         :key="option.id" 
         :value="option.id"

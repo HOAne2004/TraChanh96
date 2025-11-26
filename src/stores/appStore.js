@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import appApi from '@/api/appApi'
+import appApi from '@/apis/appApi'
 
 export const useAppStore = defineStore('appStore', () => {
   const footerInfo = ref({})
@@ -38,7 +38,7 @@ export const useAppStore = defineStore('appStore', () => {
   const fetchAppConfig = async () => {
     if (Object.keys(appConfig.value).length) return
     try {
-      const data  = await appApi.getAppConfig() 
+      const data = await appApi.getAppConfig()
       appConfig.value = data
     } catch (err) {
       console.error('Lỗi tải cấu hình App:', err)

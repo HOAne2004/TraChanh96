@@ -2,8 +2,8 @@
 import { ref, computed, nextTick } from 'vue'
 import { defineStore } from 'pinia'
 import router from '@/router'
-import * as authApi from '@/api/authApi'
-import api from '@/api/index' 
+import * as authApi from '@/apis/authApi'
+import api from '@/apis/index'
 import { useModalStore } from './modalStore'
 
 export const useUserStore = defineStore('user', () => {
@@ -213,11 +213,13 @@ export const useUserStore = defineStore('user', () => {
     try {
       // 1. Gọi API để lấy danh sách
       const response = await authApi.fetchAllUsersForAdmin(params)
-      
+
       // 2. Cập nhật State
       allUsers.value = response.data
-      totalUsersCount.value = response.totalCount ? parseInt(response.totalCount) : response.data.length
-      
+      totalUsersCount.value = response.totalCount
+        ? parseInt(response.totalCount)
+        : response.data.length
+
       return allUsers.value
     } catch (err) {
       console.error('UserStore: Lỗi tải danh sách người dùng Admin:', err)
@@ -239,16 +241,22 @@ export const useUserStore = defineStore('user', () => {
       const updatedUser = await authApi.updateUserRoleAndStatus(userId, updateDto)
 
       // 2. Cập nhật State: Tìm và thay thế người dùng trong allUsers (cho màn hình Admin)
-      const index = allUsers.value.findIndex((u) => String(u.public_id) === String(userId) || String(u.id) === String(userId))
+      const index = allUsers.value.findIndex(
+        (u) => String(u.public_id) === String(userId) || String(u.id) === String(userId),
+      )
       if (index !== -1) {
         // Cập nhật dữ liệu người dùng
         allUsers.value[index] = { ...allUsers.value[index], ...updatedUser }
       }
 
       // 3. Nếu người dùng đang tự cập nhật mình, cập nhật luôn state `user` hiện tại
-      if (user.value && (String(user.value.public_id) === String(userId) || String(user.value.id) === String(userId))) {
-          // Cập nhật thông tin user hiện tại và lưu vào localStorage
-          persistAuthData({ ...user.value, ...updatedUser }, token.value)
+      if (
+        user.value &&
+        (String(user.value.public_id) === String(userId) ||
+          String(user.value.id) === String(userId))
+      ) {
+        // Cập nhật thông tin user hiện tại và lưu vào localStorage
+        persistAuthData({ ...user.value, ...updatedUser }, token.value)
       }
 
       modalStore.showToast(`Cập nhật người dùng #${userId} thành công.`, 'success')

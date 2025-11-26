@@ -5,7 +5,7 @@ import {
   fetchUserOrders,
   fetchAllOrdersForAdmin, // Thêm
   updateOrderStatus, // Thêm
-} from '@/api/orderApi'
+} from '@/apis/orderApi'
 import { useModalStore } from './modalStore'
 
 // Giả định bạn có userStore để lấy token hoặc userId nếu cần

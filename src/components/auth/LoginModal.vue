@@ -39,7 +39,7 @@ const goToRegisterPage = () => {
              {{ activeTab === 'login' ? 'Đăng nhập' : 'Đăng ký' }} 
           </h2>
           <p v-if="activeTab === 'login'" class="text-sm text-center text-gray-500 mb-4">
-            Đăng nhập bằng số điện thoại của bạn
+            Đăng nhập bằng Email của bạn
           </p>
 
           <LoginForm />

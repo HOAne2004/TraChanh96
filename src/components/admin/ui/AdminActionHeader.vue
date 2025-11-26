@@ -19,7 +19,7 @@ const props = defineProps({
   },
   searchPlaceholder: {
     type: String,
-    default: 'Tìm kiếm theo tên, ID, hoặc mã...',
+    default: 'Tìm kiếm theo tên...',
   },
 })
 
@@ -42,11 +42,11 @@ watch(localSearchQuery, (newValue) => {
   <div
     class="bg-white dark:bg-gray-700 p-4 rounded-xl shadow mb-6 flex justify-between items-center flex-wrap gap-4"
   >
-    <Button 
+    <Button
       v-if="showAddButton"
-      @click="emit('add-new')" 
-      :label="addButtonLabel" 
-      variant="primary" 
+      @click="emit('add-new')"
+      :label="addButtonLabel"
+      variant="primary"
       size="md"
     >
       <template #icon>
@@ -66,7 +66,7 @@ watch(localSearchQuery, (newValue) => {
         </svg>
       </template>
     </Button>
-    
+
     <div class="w-full sm:w-64">
       <input
         type="text"

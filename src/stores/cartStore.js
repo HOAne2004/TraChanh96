@@ -1,7 +1,7 @@
 // src/stores/cartStore.js
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import cartApi from '@/api/cartApi'
+import cartApi from '@/apis/cartApi'
 
 export const useCartStore = defineStore('cart', () => {
   // cart: object { id, userId, totalAmount, items: [...] }
@@ -10,7 +10,9 @@ export const useCartStore = defineStore('cart', () => {
   const error = ref(null)
 
   const cartItems = computed(() => cart.value?.items ?? [])
-  const totalQuantity = computed(() => (cart.value?.items?.reduce((s, i) => s + (i.quantity || 0), 0) ?? 0))
+  const totalQuantity = computed(
+    () => cart.value?.items?.reduce((s, i) => s + (i.quantity || 0), 0) ?? 0,
+  )
   const totalPrice = computed(() => cart.value?.totalAmount ?? 0)
 
   // fetchCart: GET /api/cart/me (should return cart read dto)
@@ -60,7 +62,9 @@ export const useCartStore = defineStore('cart', () => {
         // if backend returns success only, refetch cart
         try {
           await fetchCart()
-        } catch (e) { /* ignore */ }
+        } catch (e) {
+          /* ignore */
+        }
       }
       return cart.value
     } catch (err) {
@@ -93,11 +97,11 @@ export const useCartStore = defineStore('cart', () => {
     try {
       // Gọi API backend
       const res = await cartApi.updateItem(cartItemId, { quantity })
-      
+
       // Cập nhật state từ dữ liệu mới nhất server trả về
       const newCart = res?.data ?? res
       if (newCart) cart.value = newCart
-      
+
       return cart.value
     } catch (err) {
       error.value = err?.message || 'Cập nhật số lượng thất bại'
@@ -125,6 +129,6 @@ export const useCartStore = defineStore('cart', () => {
     removeFromCart,
     clearCart,
     updateQuantity,
-    resetCartState
+    resetCartState,
   }
 })

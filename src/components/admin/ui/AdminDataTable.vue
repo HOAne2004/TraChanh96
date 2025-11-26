@@ -111,19 +111,21 @@ const getUniqueKey = (item, index) => {
             :key="col.key"
             class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100"
           >
-            <StatusBadge v-if="col.isBadge" :status="getCellValue(item, col.key)" />
+            <slot :name="`cell-${col.key}`" :item="item" :value="getCellValue(item, col.key)">
+              <StatusBadge v-if="col.isBadge" :status="getCellValue(item, col.key)" />
 
-            <img
-              v-else-if="
-                col.key.toLowerCase().includes('imageurl') ||
-                col.key.toLowerCase().includes('logourl')
-              "
-              :src="getCellValue(item, col.key)"
-              alt="Ảnh"
-              class="w-10 h-10 object-cover rounded-md"
-            />
+              <img
+                v-else-if="
+                  col.key.toLowerCase().includes('imageurl') ||
+                  col.key.toLowerCase().includes('logourl')
+                "
+                :src="getCellValue(item, col.key)"
+                alt="Ảnh"
+                class="w-10 h-10 object-cover rounded-md"
+              />
 
-            <span v-else>{{ getCellValue(item, col.key) }}</span>
+              <span v-else>{{ getCellValue(item, col.key) }}</span>
+            </slot>
           </td>
 
           <td
@@ -177,5 +179,33 @@ const getUniqueKey = (item, index) => {
         </tr>
       </tbody>
     </table>
+    <div
+      v-if="totalCount > 0"
+      class="flex justify-between items-center px-6 py-4 border-t dark:border-gray-700"
+    >
+      <div class="text-sm text-gray-700 dark:text-gray-400">
+        Hiển thị {{ items.length }} trên {{ totalCount }} kết quả
+      </div>
+
+      <div class="flex space-x-2">
+        <button
+          @click="emit('change-page', pagination.page - 1)"
+          :disabled="pagination.page <= 1"
+          class="px-3 py-1 text-sm rounded-lg border dark:border-gray-600 dark:text-white"
+        >
+          Trước
+        </button>
+        <span class="px-3 py-1 text-sm font-semibold dark:text-white">
+          Trang {{ pagination.page }}
+        </span>
+        <button
+          @click="emit('change-page', pagination.page + 1)"
+          :disabled="pagination.page * pagination.limit >= totalCount"
+          class="px-3 py-1 text-sm rounded-lg border dark:border-gray-600 dark:text-white"
+        >
+          Sau
+        </button>
+      </div>
+    </div>
   </div>
 </template>

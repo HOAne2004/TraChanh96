@@ -1,7 +1,8 @@
 // src/api/authApi.js
 import api from './index'
 
-const AUTH_ENDPOINT = '/users' 
+const AUTH_ENDPOINT = '/users'
+const ADMIN_ENDPOINT = '/Admin'
 
 // Utility: try to extract token from various response shapes
 function extractToken(payload) {
@@ -31,10 +32,7 @@ export async function login(payload) {
   } catch (err) {
     // normalize error message
     const message =
-      err?.response?.data?.message ||
-      err?.response?.data ||
-      err?.message ||
-      'Đăng nhập thất bại'
+      err?.response?.data?.message || err?.response?.data || err?.message || 'Đăng nhập thất bại'
     throw new Error(message)
   }
 }
@@ -46,10 +44,7 @@ export async function register(registerDto) {
     return r.data
   } catch (err) {
     const message =
-      err?.response?.data?.message ||
-      err?.response?.data ||
-      err?.message ||
-      'Đăng ký thất bại'
+      err?.response?.data?.message || err?.response?.data || err?.message || 'Đăng ký thất bại'
     throw new Error(message)
   }
 }
@@ -91,7 +86,7 @@ export async function updateProfile(data) {
 export async function fetchAllUsersForAdmin(params = {}) {
   try {
     // Gọi API để lấy danh sách users, server sẽ kiểm tra quyền Admin
-    const response = await api.get(AUTH_ENDPOINT, { params }) 
+    const response = await api.get(`${ADMIN_ENDPOINT}/users`, { params })
 
     console.log(`API: Tải ${response.data.length} người dùng cho Admin thành công.`)
     // Trả về cả headers để Store có thể lấy X-Total-Count cho phân trang (Nếu Backend hỗ trợ)
@@ -115,11 +110,21 @@ export async function fetchAllUsersForAdmin(params = {}) {
 export async function updateUserRoleAndStatus(userId, updateDto) {
   try {
     // Sử dụng PATCH để chỉ cập nhật các trường được chỉ định
-    const response = await api.patch(`${AUTH_ENDPOINT}/${userId}`, updateDto)
-    
+    const response = await api.patch(`${ADMIN_ENDPOINT}/users/${userId}`, updateDto)
     return response.data
   } catch (err) {
     console.error(`❌ Lỗi cập nhật người dùng #${userId}:`, err.response?.data || err.message)
     throw new Error(err.response?.data?.message || 'Không thể cập nhật thông tin người dùng.')
   }
 }
+
+export async function fetchUsersForAdmin() {
+    try {
+      // Giả định endpoint backend là /api/users
+      const { data } = await api.get('/users')
+      return data
+    } catch (err) {
+      console.error('Lỗi fetch users:', err)
+      throw err
+    }
+  }
