@@ -2,7 +2,7 @@
 import api from './index'
 
 // ⭐️ Endpoint C# của chúng ta là /api/cart
-const API = '/cart'
+const API = 'api/cart'
 
 const cartApi = {
   /**
@@ -65,15 +65,15 @@ const cartApi = {
 
   /**
    * 5. Cập nhật số lượng (PUT /api/cart/update-item)
-   * @param {number} cartItemId 
-   * @param {number} quantity 
+   * @param {number} cartItemId
+   * @param {number} quantity
    */
   async updateItem(cartItemId, { quantity }) {
     try {
       // Gửi đúng cấu trúc CartItemUpdateDto
-      const { data } = await api.put(`${API}/update-item`, { 
-        cartItemId: cartItemId, 
-        quantity: quantity 
+      const { data } = await api.put(`${API}/update-item`, {
+        cartItemId: cartItemId,
+        quantity: quantity
       })
       return data
     } catch (err) {

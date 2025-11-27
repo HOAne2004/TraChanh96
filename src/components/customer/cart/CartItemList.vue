@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useCartStore } from '@/stores/cartStore'
 import { RouterLink } from 'vue-router'
-import emptyCartImage from '@/assets/others/empty-cart.png' // Import ảnh
+import emptyCartImage from '@/assets/images/empty-states/empty-cart.png'
 
 const cartStore = useCartStore()
 

@@ -5,7 +5,7 @@ import { useAppStore } from '@/stores/appStore'
 import { storeToRefs } from 'pinia'
 
 // Components
-import StoreCard from '@/components/customer/StoreCard.vue'
+import StoreCard from '@/components/customer/card/StoreCard.vue'
 import Button from '@/components/common/Button.vue'
 
 const storeStore = useStoreStore()
@@ -164,7 +164,11 @@ const showLess = () => {
 
     <!-- Thử nghiệm -->
     <section class="mt-12">
-      <h2 class="text-2xl font-bold mb-6 border-b pb-2 text-green-700 dark:text-green-400 dark:border-gray-700">Hệ thống cửa hàng</h2>
+      <h2
+        class="text-2xl font-bold mb-6 border-b pb-2 text-green-700 dark:text-green-400 dark:border-gray-700"
+      >
+        Hệ thống cửa hàng
+      </h2>
 
       <div v-if="visibleStore?.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <StoreCard v-for="store in visibleStore" :key="store.id" :store="store" />

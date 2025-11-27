@@ -1,5 +1,4 @@
 <script setup>
-import NavLink from '@/components/common/NavLink.vue'
 import { computed, onMounted } from 'vue'
 import { useCartStore } from '@/stores/cartStore'
 import { useAppStore } from '@/stores/appStore'
@@ -11,9 +10,10 @@ import { useModalStore } from '@/stores/modalStore'
 // Components mới
 import CartItemList from '@/components/customer/cart/CartItemList.vue'
 import CartSummaryPanel from '@/components/customer/cart/CartSummaryPanel.vue'
+import CustomerEmptyState from '@/components/common/CustomerEmptyState.vue'
 
 // Import ảnh cho trạng thái giỏ hàng trống (cần đảm bảo đường dẫn đúng)
-import emptyCartImage from '@/assets/others/empty-cart.png' 
+//import emptyCartImage from '@/assets/images/empty-states/empty-cart.png'
 
 const appStore = useAppStore()
 const cartStore = useCartStore()
@@ -23,7 +23,7 @@ const router = useRouter()
 
 // Lấy refs từ Stores
 const { cartItems, totalPrice } = storeToRefs(cartStore)
-const { storePolicies } = storeToRefs(appStore)
+//const { storePolicies } = storeToRefs(appStore)
 const { isLoggedIn } = storeToRefs(userStore)
 
 onMounted(async () => {
@@ -42,12 +42,12 @@ const checkout = () => {
   if (!isLoggedIn.value) {
     // 1. Mở modal Login
     modalStore.openLoginModal()
-    
+
     // 2. 🚨 Dùng Toast/Notification thay cho alert
     modalStore.showToast('Vui lòng đăng nhập trước khi thanh toán!', 'info', 4000)
     return
   }
-  
+
   // 3. Chuyển sang trang Checkout nếu đã đăng nhập
   router.push('/checkout')
 }
@@ -75,7 +75,7 @@ const checkout = () => {
     </div>
 
     <!-- Trạng thái giỏ hàng trống -->
-    <div v-else class="text-center py-10 text-gray-500">
+    <!-- <div v-else class="text-center py-10 text-gray-500">
       <div class="max-w-xs mx-auto mb-4">
         <img
           :src="emptyCartImage"
@@ -88,6 +88,14 @@ const checkout = () => {
       <NavLink to="/products" variant="outline" class="text-gray-400 text-md"
         >Hãy thêm món ngon đầu tiên nào!</NavLink
       >
-    </div>
+    </div> -->
+    <CustomerEmptyState
+      v-if="cartItems.length === 0"
+      type="cart"
+      title="Giỏ hàng trống trơn"
+      message="Có vẻ bạn chưa thêm món nào vào giỏ hàng"
+      action-label="Thêm đồ uống ngay nào!"
+      action-route="/products"
+    />
   </div>
 </template>

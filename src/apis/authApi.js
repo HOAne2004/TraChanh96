@@ -1,8 +1,8 @@
 // src/api/authApi.js
 import api from './index'
 
-const AUTH_ENDPOINT = '/users'
-const ADMIN_ENDPOINT = '/Admin'
+const AUTH_ENDPOINT = 'api/users'
+const ADMIN_ENDPOINT = 'api/admin'
 
 // Utility: try to extract token from various response shapes
 function extractToken(payload) {

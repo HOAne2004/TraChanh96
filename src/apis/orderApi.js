@@ -1,6 +1,6 @@
-import api from './index' 
+import api from './index'
 
-const ORDERS_ENDPOINT = '/orders' // Endpoint chung cho đơn hàng
+const ORDERS_ENDPOINT = 'api/orders' // Endpoint chung cho đơn hàng
 
 /**
  * Gửi dữ liệu đơn hàng lên server

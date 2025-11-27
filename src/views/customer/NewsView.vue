@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia'
 import { RouterLink } from 'vue-router'
 
 // Components
-import NewsCard from '@/components/customer/NewsCard.vue'
+import NewsCard from '@/components/customer/card/NewsCard.vue'
 import Button from '@/components/common/Button.vue'
 
 const newsStore = useNewsStore()
@@ -100,7 +100,11 @@ const showLess = () => {
     </section>
 
     <section class="mt-12">
-      <h2 class="text-2xl font-bold mb-6 border-b pb-2 dark:border-gray-700 text-green-700 dark:text-green-400">Các Tin Tức Khác</h2>
+      <h2
+        class="text-2xl font-bold mb-6 border-b pb-2 dark:border-gray-700 text-green-700 dark:text-green-400"
+      >
+        Các Tin Tức Khác
+      </h2>
 
       <div
         v-if="visibleArticles.length"

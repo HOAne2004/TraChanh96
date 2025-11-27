@@ -1,20 +1,27 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useProductStore } from '@stores/productStore'
-import { useAppStore } from '@stores/appStore'
+import { useProductStore } from '@/stores/productStore'
+import { useAppStore } from '@/stores/appStore'
 import { storeToRefs } from 'pinia'
-import { useCartStore } from '@stores/cartStore'
+import { useCartStore } from '@/stores/cartStore'
+import { formatPrice } from '@/utils/formatters' // Import hàm format
 
-import Notification from '@common/Notification.vue'
-import NavLink from '@common/NavLink.vue'
-import TitledContainer from '@customer/TitledContainer.vue'
+import Notification from '@/components/common/Notification.vue'
+import NavLink from '@/components/common/NavLink.vue'
+import TitledContainer from '@/components/customer/TitledContainer.vue'
 import Button from '@/components/common/Button.vue'
 import DeliveryInfor from '@/components/customer/DeliveryInfor.vue'
 
+// Import ảnh mặc định
+import defaultImage from '@/assets/images/others/default-drink.png'
+
 const route = useRoute()
+const router = useRouter()
 const productStore = useProductStore()
 const appStore = useAppStore()
+const cartStore = useCartStore()
+
 const { products, toppings, sizes, sugarLevels, iceLevels } = storeToRefs(productStore)
 const { storePolicies } = storeToRefs(appStore)
 
@@ -24,360 +31,283 @@ const selectedSugar = ref(null)
 const selectedIce = ref(null)
 const selectedToppings = ref([])
 const quantity = ref(1)
+const showNotification = ref(false)
 
 const productId = computed(() => route.params.id)
 
-// Lấy sản phẩm theo ID
-const product = computed(() => products.value.find((p) => p.id == productId.value))
+// 1. Lấy sản phẩm (Đổi == thành === String() để an toàn)
+const product = computed(() => products.value.find((p) => String(p.id) === String(productId.value)))
 
-// Lấy chính sách cửa hàng đầu tiên (nếu có)
+// 2. Xử lý ảnh (Ghép domain)
+const fullImageUrl = computed(() => {
+  if (!product.value) return ''
+  const url = product.value.imageUrl
+  if (!url) return defaultImage
+  if (url.startsWith('http')) return url
+  return `https://trachanh96-be-production.up.railway.app${url}`
+})
+
 const storePolicy = computed(() => storePolicies.value?.[0] || null)
 
-// Khi component được mount, đảm bảo dữ liệu đã có
 onMounted(async () => {
   try {
-    await Promise.all([productStore.fetchProduct(), appStore.fetchStorePolicies()])
-
-    // Thiết lập lựa chọn mặc định sau khi data loaded
+    // Tải song song cả 2 để tiết kiệm thời gian
+    await Promise.all([
+        productStore.fetchProduct(), // Hàm này tải cả options
+        appStore.fetchStorePolicies()
+    ])
     setDefaultSelections()
   } catch (error) {
-    console.error('Lỗi khi tải dữ liệu:', error)
+    console.error('Lỗi tải dữ liệu:', error)
   } finally {
     isLoading.value = false
   }
 })
 
-// Các nhóm size / đường / đá
-const sizeGroup = computed(() => {
-  if (!sizes.value.length) return []
-  return sizes.value[0]?.sizes || []
-})
-
-const sugarGroup = computed(() => {
-  if (!sugarLevels.value.length) return []
-  return sugarLevels.value[0]?.levels || []
-})
-
-const iceGroup = computed(() => {
-  if (!iceLevels.value.length) return []
-  return iceLevels.value[0]?.levels || []
-})
-
-// Hàm chọn size nhỏ nhất (extraPrice thấp nhất)
-const selectSmallestSize = () => {
-  if (sizeGroup.value.length > 0) {
-    const smallestSize = sizeGroup.value.reduce((min, size) =>
-      size.extraPrice < min.extraPrice ? size : min,
-    )
-    selectedSize.value = smallestSize
-    console.log('Đã chọn size mặc định:', smallestSize.label)
-  }
-}
-
-// Hàm chọn đường 100%
-const selectFullSugar = () => {
-  if (sugarGroup.value.length > 0) {
-    const fullSugar = sugarGroup.value.find((sugar) => sugar.value === 100) || sugarGroup.value[0]
-    selectedSugar.value = fullSugar
-    console.log('Đã chọn đường mặc định:', fullSugar.label)
-  }
-}
-
-// Hàm chọn đá 100%
-const selectFullIce = () => {
-  if (iceGroup.value.length > 0) {
-    const fullIce = iceGroup.value.find((ice) => ice.value === 100) || iceGroup.value[0]
-    selectedIce.value = fullIce
-    console.log('Đã chọn đá mặc định:', fullIce.label)
-  }
-}
-
-// Hàm thiết lập tất cả giá trị mặc định
+// 3. Logic chọn mặc định (Dựa trên mảng phẳng)
 const setDefaultSelections = () => {
-  selectSmallestSize()
-  selectFullSugar()
-  selectFullIce()
+  // Size: Chọn size giá thấp nhất (thường là Nhỏ/Vừa)
+  if (sizes.value.length > 0) {
+    selectedSize.value = sizes.value.reduce((min, s) => (s.priceModifier < min.priceModifier ? s : min), sizes.value[0])
+  }
+  // Sugar: Chọn 100%
+  if (sugarLevels.value.length > 0) {
+    selectedSugar.value = sugarLevels.value.find(s => s.value === 100) || sugarLevels.value[0]
+  }
+  // Ice: Chọn 100%
+  if (iceLevels.value.length > 0) {
+    selectedIce.value = iceLevels.value.find(i => i.value === 100) || iceLevels.value[0]
+  }
 }
 
-// Watch để tự động chọn mặc định khi data thay đổi
-watch([sizeGroup, sugarGroup, iceGroup], () => {
-  // Chỉ thiết lập mặc định nếu chưa có giá trị nào được chọn
-  if (!selectedSize.value || !selectedSugar.value || !selectedIce.value) {
-    setDefaultSelections()
-  }
+// Watch data thay đổi (quan trọng khi F5 trang)
+watch([sizes, sugarLevels, iceLevels], () => {
+    if (!selectedSize.value) setDefaultSelections()
 })
 
-// const productToppings = computed(() =>
-//   toppings.value.filter((t) => product.value?.toppingIds?.includes(t.id)),
-// )
-
-// Tính tổng giá
+// 4. Tính tổng tiền (Cập nhật tên biến)
 const totalPrice = computed(() => {
   if (!product.value) return 0
-  const base = Number(product.value.price) || 0
-  const sizeExtra = selectedSize.value?.extraPrice || 0
-  const toppingTotal = selectedToppings.value.reduce((sum, t) => sum + Number(t.price), 0)
+  const base = Number(product.value.basePrice) || 0
+  const sizeExtra = Number(selectedSize.value?.priceModifier) || 0
+  const toppingTotal = selectedToppings.value.reduce((sum, t) => sum + Number(t.basePrice), 0) // Topping cũng có basePrice
+
   return (base + sizeExtra + toppingTotal) * quantity.value
 })
 
-// Bật/tắt topping
+// Toggle topping
 function toggleTopping(topping) {
   const idx = selectedToppings.value.findIndex((t) => t.id === topping.id)
   if (idx > -1) selectedToppings.value.splice(idx, 1)
   else selectedToppings.value.push(topping)
 }
 
-//Thêm giỏ hàng
-const cartStore = useCartStore()
-
-const showNotification = ref(false)
+// 5. Thêm vào giỏ (Mapping chuẩn)
 const addToCart = () => {
-  if (!product.value || !selectedSize.value || !selectedSugar.value || !selectedIce.value) {
-    // (Tùy chọn: Thêm thông báo lỗi cho người dùng)
-    console.error('Vui lòng chọn đầy đủ các tùy chọn sản phẩm.')
-    return
-  }
+  if (!product.value || !selectedSize.value) return
 
-  // 1. Xây dựng mảng Topping DTO (CartToppingCreateDto)
-  // API C# yêu cầu { productId, quantity } cho mỗi topping.
-  // Giao diện này chỉ hỗ trợ (toggle), nên ta giả định quantity = 1.
-  const toppingsDto = selectedToppings.value.map((topping) => {
-    return {
-      productId: topping.id, // ⭐️ Đây là ProductId của Topping
-      quantity: 1, // ⭐️ Giả định số lượng là 1
-    }
-  })
-  // 2. Xây dựng DTO Món chính (CartItemCreateDto)
+  // Topping DTO
+  const toppingsDto = selectedToppings.value.map(t => ({
+      productId: t.id,
+      quantity: 1,
+      name: t.name, // Lưu thêm để hiện thị UI giỏ hàng
+      price: t.basePrice
+  }))
+
   const itemDto = {
-    productId: product.value.id, // ID món chính
+    id: `${product.value.id}_${Date.now()}`, // ID frontend unique
+    productId: product.value.id,
+    name: product.value.name,
+    image: fullImageUrl.value,
+    price: Number(product.value.basePrice),
     quantity: quantity.value,
 
-    // ⭐️ QUAN TRỌNG: Gửi ID, không gửi Label hay Price
+    // Options
     sizeId: selectedSize.value.id,
-    sugarLevelId: selectedSugar.value.id,
-    iceLevelId: selectedIce.value.id,
+    size: selectedSize.value.label,
+    sizePrice: selectedSize.value.priceModifier,
 
-    // Mảng topping lồng nhau
+    sugarId: selectedSugar.value?.id,
+    sugar: selectedSugar.value?.label,
+
+    iceId: selectedIce.value?.id,
+    ice: selectedIce.value?.label,
+
     toppings: toppingsDto,
+    // Tổng giá topping để tiện tính toán frontend
+    toppingPrice: selectedToppings.value.reduce((sum, t) => sum + Number(t.basePrice), 0)
   }
 
-  // 3. GỌI ACTION CỦA CARTSTORE MỚI
-  // cartStore.loading sẽ tự động được kích hoạt
-  // API C# sẽ xử lý việc tính toán giá cả
   cartStore.addToCart(itemDto)
 
-  // 4. Hiển thị thông báo (Giữ nguyên)
   showNotification.value = false
-  setTimeout(() => (showNotification.value = true), 10)
-  quantity.value = 1 // Reset số lượng
+  setTimeout(() => (showNotification.value = true), 50)
+  quantity.value = 1
+  selectedToppings.value = [] // Reset topping
 }
 
-// debug (tạm): bỏ hoặc comment khi đã ok
-watch(
-  [sizes, sugarLevels, iceLevels, product],
-  () => {
-    console.log('Product:', product.value)
-    console.log('Sizes:', sizes.value)
-    console.log('Sugar:', sugarLevels.value)
-    console.log('Ice:', iceLevels.value)
-    console.log('🧩 Options hiện tại:', {
-      size: selectedSize.value?.label,
-      sugar: selectedSugar.value?.label,
-      ice: selectedIce.value?.label,
-      toppings: selectedToppings.value.map((t) => t.name),
-    })
-  },
-  { deep: true },
-)
-
-const router = useRouter
 const checkout = () => {
-  router.push('/checkout')
+    addToCart()
+    router.push('/checkout')
 }
 </script>
 
 <template>
-  <main class="p-6 max-w-6xl mx-auto">
-    <!-- Trạng thái đang tải -->
-    <div v-if="isLoading" class="text-center text-gray-500">Đang tải thông tin sản phẩm...</div>
-
-    <!-- Nếu không tìm thấy -->
-    <div v-else-if="!product" class="text-center text-red-500">
-      Không tìm thấy sản phẩm với ID {{ productId }}
+  <main class="p-6 max-w-6xl mx-auto min-h-screen">
+    <div v-if="isLoading" class="flex justify-center py-20">
+       <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-green-600"></div>
     </div>
 
-    <!-- Breadcrumb -->
-    <div class="mb-4 text-gray-500">
-      <NavLink to="/products" label="Sản phẩm" variant="profile" class="hover:underline" />
-      <span> &gt; {{ product?.name }}</span>
+    <div v-else-if="!product" class="text-center py-20">
+       <h3 class="text-xl font-bold text-gray-700">Không tìm thấy sản phẩm</h3>
+       <Button label="Quay lại Menu" class="mt-4" @click="$router.push('/products')" />
     </div>
-    <!-- Nội dung sản phẩm -->
-    <div v-if="product" class="grid grid-cols-12 gap-8">
-      <!-- Left: Hình ảnh -->
-      <div class="col-span-5 flex justify-center items-center p-6">
-        <div class="relative group">
-          <div
-            class="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition-opacity duration-300"
-          ></div>
-          <img
-            :src="product.image"
-            :alt="product.name"
-            class="relative w-full max-w-md rounded-xl shadow-2xl object-contain transform group-hover:scale-105 transition-all duration-500 ease-out z-10"
-          />
-          <div
-            class="absolute inset-0 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 group-hover:bg-white/20 transition-all duration-300 z-0"
-          ></div>
+
+    <div v-else>
+        <div class="mb-6 text-sm text-gray-500 flex items-center gap-2">
+          <NavLink to="/products" label="Thực đơn" variant="secondary" />
+          <span>/</span>
+          <span class="font-semibold text-gray-800 dark:text-gray-200">{{ product.name }}</span>
         </div>
-      </div>
-      <!-- Right: Thông tin -->
-      <div class="col-span-7 space-y-5">
-        <h1 class="text-3xl font-bold">{{ product.name }}</h1>
-        <div class="flex items-center gap-1 text-yellow-500">
-          <span v-for="i in 5" :key="i">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              class="w-5 h-5"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527 c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                clip-rule="evenodd"
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
+          <div class="md:col-span-5 flex justify-center">
+            <div class="relative group w-full max-w-sm aspect-square bg-gray-50 dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-700">
+              <img
+                :src="fullImageUrl"
+                :alt="product.name"
+                class="w-full h-full object-contain drop-shadow-xl transition-transform duration-500 group-hover:scale-105"
+                @error="(e) => e.target.src = defaultImage"
               />
-            </svg>
-          </span>
-        </div>
-
-        <!-- Size, Đường, Đá -->
-        <div class="space-y-3">
-          <!-- Size -->
-          <div class="flex items-center gap-6">
-            <h3 class="font-semibold w-16">Size</h3>
-            <div class="flex gap-3 flex-1">
-              <button
-                v-for="size in sizeGroup"
-                :key="size.label"
-                @click="selectedSize = size"
-                :class="[
-                  'px-4 py-2 rounded-lg border transition',
-                  selectedSize?.label === size.label
-                    ? 'bg-green-600 text-white border-green-600'
-                    : 'border-gray-300 hover:border-green-400',
-                ]"
-              >
-                {{ size.label }}
-              </button>
             </div>
           </div>
 
-          <!-- Đường -->
-          <div class="flex items-center gap-6">
-            <h3 class="font-semibold w-16">Đường</h3>
-            <div class="flex gap-3 flex-wrap flex-1">
-              <button
-                v-for="sugar in sugarGroup"
-                :key="sugar.label"
-                @click="selectedSugar = sugar"
-                :class="[
-                  'px-4 py-2 rounded-lg border transition',
-                  selectedSugar?.label === sugar.label
-                    ? 'bg-green-600 text-white border-green-600'
-                    : 'border-gray-300 hover:border-green-400',
-                ]"
-              >
-                {{ sugar.label }}
-              </button>
+          <div class="md:col-span-7 space-y-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{{ product.name }}</h1>
+                <p class="text-2xl font-extrabold text-green-600">{{ formatPrice(product.basePrice) }}</p>
             </div>
-          </div>
 
-          <!-- Đá -->
-          <div class="flex items-center gap-6">
-            <h3 class="font-semibold w-16">Đá</h3>
-            <div class="flex gap-3 flex-wrap flex-1">
-              <button
-                v-for="ice in iceGroup"
-                :key="ice.label"
-                @click="selectedIce = ice"
-                :class="[
-                  'px-4 py-2 rounded-lg border transition',
-                  selectedIce?.label === ice.label
-                    ? 'bg-green-600 text-white border-green-600'
-                    : 'border-gray-300 hover:border-green-400',
-                ]"
-              >
-                {{ ice.label }}
-              </button>
+            <div class="space-y-4">
+              <div v-if="sizes.length">
+                <span class="block text-sm font-semibold mb-2">Chọn Size</span>
+                <div class="flex flex-wrap gap-3">
+                  <button
+                    v-for="size in sizes"
+                    :key="size.id"
+                    @click="selectedSize = size"
+                    :class="[
+                      'px-4 py-2 rounded-lg border text-sm font-medium transition-all',
+                      selectedSize?.id === size.id
+                        ? 'bg-green-600 text-white border-green-600 shadow-md'
+                        : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:border-green-500'
+                    ]"
+                  >
+                    {{ size.label }}
+                    <span v-if="size.priceModifier > 0" class="text-xs ml-1 opacity-80">(+{{ formatPrice(size.priceModifier) }})</span>
+                  </button>
+                </div>
+              </div>
+
+              <div v-if="sugarLevels.length">
+                <span class="block text-sm font-semibold mb-2">Độ ngọt</span>
+                <div class="flex flex-wrap gap-3">
+                  <button
+                    v-for="level in sugarLevels"
+                    :key="level.id"
+                    @click="selectedSugar = level"
+                    :class="[
+                      'px-4 py-2 rounded-lg border text-sm font-medium transition-all',
+                      selectedSugar?.id === level.id
+                        ? 'bg-green-600 text-white border-green-600'
+                        : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:border-green-500'
+                    ]"
+                  >
+                    {{ level.label }}
+                  </button>
+                </div>
+              </div>
+
+              <div v-if="iceLevels.length">
+                <span class="block text-sm font-semibold mb-2">Lượng đá</span>
+                <div class="flex flex-wrap gap-3">
+                  <button
+                    v-for="level in iceLevels"
+                    :key="level.id"
+                    @click="selectedIce = level"
+                    :class="[
+                      'px-4 py-2 rounded-lg border text-sm font-medium transition-all',
+                      selectedIce?.id === level.id
+                        ? 'bg-green-600 text-white border-green-600'
+                        : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:border-green-500'
+                    ]"
+                  >
+                    {{ level.label }}
+                  </button>
+                </div>
+              </div>
+
+              <div v-if="toppings.length">
+                 <span class="block text-sm font-semibold mb-2">Thêm Topping</span>
+                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <div
+                      v-for="t in toppings"
+                      :key="t.id"
+                      @click="toggleTopping(t)"
+                      class="flex items-center p-2 rounded-lg border cursor-pointer transition-all hover:shadow-sm"
+                      :class="selectedToppings.some(s => s.id === t.id) ? 'border-green-600 bg-green-50 dark:bg-green-900/20' : 'border-gray-200 dark:border-gray-600'"
+                    >
+                       <div class="w-10 h-10 rounded overflow-hidden mr-3 bg-gray-200 flex-shrink-0">
+                          <img
+                            :src="`https://trachanh96-be-production.up.railway.app${t.imageUrl}`"
+                            class="w-full h-full object-cover"
+                            @error="(e) => e.target.src = defaultImage"
+                          />
+                       </div>
+                       <div class="flex-1 min-w-0">
+                          <p class="text-sm font-medium truncate">{{ t.name }}</p>
+                          <p class="text-xs text-gray-500">+{{ formatPrice(t.basePrice) }}</p>
+                       </div>
+                       <div class="w-5 h-5 rounded-full border flex items-center justify-center"
+                            :class="selectedToppings.some(s => s.id === t.id) ? 'bg-green-600 border-green-600' : 'border-gray-300'">
+                            <svg v-if="selectedToppings.some(s => s.id === t.id)" class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+            </div>
+
+            <div class="pt-6 border-t dark:border-gray-700 flex flex-col sm:flex-row gap-4 items-center">
+               <div class="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg">
+                  <button @click="quantity = Math.max(1, quantity - 1)" class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition">-</button>
+                  <span class="px-4 font-bold min-w-[3rem] text-center">{{ quantity }}</span>
+                  <button @click="quantity++" class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition">+</button>
+               </div>
+
+               <div class="flex-1 text-center sm:text-left">
+                  <span class="block text-xs text-gray-500">Tạm tính</span>
+                  <span class="text-2xl font-bold text-green-700">{{ formatPrice(totalPrice) }}</span>
+               </div>
+
+               <div class="flex gap-3 w-full sm:w-auto">
+                  <Button label="Thêm vào giỏ" variant="outline" class="flex-1" @click="addToCart">
+                     <template #icon>🛒</template>
+                  </Button>
+                  <Button label="Mua ngay" variant="primary" class="flex-1" @click="checkout" />
+               </div>
             </div>
           </div>
         </div>
 
-        <!-- Topping -->
-        <div>
-          <h3 class="font-semibold mb-2">Topping</h3>
-          <div class="flex gap-3 flex-wrap">
-            <div
-              v-for="t in toppings"
-              :key="t.id"
-              class="border rounded-lg p-2 w-32 cursor-pointer hover:shadow-md transition"
-              :class="
-                selectedToppings.some((s) => s.id === t.id) ? 'border-green-600' : 'border-gray-300'
-              "
-              @click="toggleTopping(t)"
-            >
-              <img :src="t.image" :alt="t.name" class="rounded-md mb-2 h-16 w-full object-cover" />
-              <p class="text-sm font-semibold text-center">{{ t.name }}</p>
-              <p class="text-xs text-gray-500 text-center">
-                {{ Number(t.price).toLocaleString() }}đ
-              </p>
-            </div>
-          </div>
-        </div>
-        <!-- Số lượng + Giá -->
-        <div class="flex items-center gap-6 mt-4">
-          <div class="flex items-center border rounded-lg">
-            <button @click="quantity = Math.max(1, quantity - 1)" class="px-3 py-1 text-lg">
-              −
-            </button>
-            <span class="px-4">{{ quantity }}</span>
-            <button @click="quantity++" class="px-3 py-1 text-lg">+</button>
-          </div>
-          <p class="text-2xl font-bold text-green-700 dark:text-yellow-500">
-            {{ totalPrice.toLocaleString() }}đ
-          </p>
-        </div>
-        <!-- Nút mua -->
-        <div class="flex gap-4 mt-4">
-          <Button @click="checkout" variant="primary"> Mua ngay </Button>
-          <Button @click="addToCart" variant="outline">
-            <template #icon>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6 inline-block"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-                />
-              </svg>
-            </template>
-          </Button>
-        </div>
-      </div>
+        <TitledContainer title="Mô tả sản phẩm" controls="hidden">
+           <div class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+              <p>{{ product.description || 'Đang cập nhật mô tả...' }}</p>
+           </div>
+        </TitledContainer>
+
+        <DeliveryInfor v-if="storePolicy" :policy="storePolicy" class="mt-8" />
     </div>
-    <!-- Chi tiết sản phẩm -->
-    <TitledContainer title="Chi tiết sản phẩm" controls="hidden" v-if="product">
-      <p class="text-gray-600 dark:text-gray-200 leading-relaxed">{{ product.description }}</p>
-    </TitledContainer>
 
-    <!-- Thông tin giao hàng -->
-    <DeliveryInfor v-if="storePolicy" :policy="storePolicy" />
-
-    <Notification :show="showNotification" :message="`Đã thêm ${product.name} vào giỏ hàng`" />
+    <Notification :show="showNotification" :message="`Đã thêm ${product?.name} vào giỏ hàng`" />
   </main>
 </template>

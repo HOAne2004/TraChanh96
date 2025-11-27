@@ -1,11 +1,11 @@
 import api from '.'
 
 // ⭐️ THAY ĐỔI: Đổi tên biến để rõ ràng hơn
-const PRODUCTS_API = '/products'
-const CATEGORIES_API = '/categories'
-const SIZES_API = '/Sizes'
-const SUGAR_LEVELS_API = '/SugarLevels'
-const ICE_LEVELS_API = '/IceLevels'
+const PRODUCTS_API = 'api/products'
+const CATEGORIES_API = 'api/categories'
+const SIZES_API = 'api/sizes'
+const SUGAR_LEVELS_API = 'api/sugarLevels'
+const ICE_LEVELS_API = 'api/iceLevels'
 
 const handleError = (error, name) => {
   console.error(`❌ Lỗi khi fetch ${name}:`, error.message)
