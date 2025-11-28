@@ -99,18 +99,6 @@ export const useUserStore = defineStore('user', () => {
       const userPayload = await fetchCurrentUser()
       if (!userPayload) throw new Error('Không thể lấy thông tin người dùng sau khi đăng nhập.')
       await nextTick()
-      // 4) Sync cart: tải cart từ server (nếu store có method fetchCart)
-      try {
-        const { useCartStore } = await import('@/stores/cartStore')
-        const cartStore = useCartStore()
-        if (cartStore?.fetchCart) {
-          await cartStore.fetchCart()
-        }
-      } catch (e) {
-        // không bắt buộc — chỉ log
-        console.warn('Không thể sync giỏ hàng khi login:', e)
-      }
-
       // 5) show toast và điều hướng (caller/modal store có thể hiển thị)
       // lưu auth (user + token) đã được thực hiện trong fetchCurrentUser (persistAuthData)
       // redirect
@@ -165,20 +153,6 @@ export const useUserStore = defineStore('user', () => {
   async function safeLogout({ redirect = true } = {}) {
     loading.value = true
     try {
-      // reset cart store if exists
-      try {
-        const { useCartStore } = await import('@/stores/cartStore')
-        const cartStore = useCartStore()
-        if (cartStore?.resetCartState) {
-          cartStore.resetCartState()
-        } else {
-          // fallback: clear cart object if present
-          cartStore.cart = null
-        }
-      } catch (e) {
-        // ignore if cart store not available
-      }
-
       // clear auth data locally
       clearAuthDataLocal()
 

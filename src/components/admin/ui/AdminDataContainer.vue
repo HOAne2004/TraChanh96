@@ -54,7 +54,7 @@ const showInitialEmpty = computed(() => {
     >
       <div class="max-w-xs mx-auto mb-4">
         <img
-          src="@assets/others/not-found.png"
+          src="@assets/images/empty-states/empty-search.png"
           alt="Không tìm thấy sản phẩm phù hợp"
           title="Không tìm thấy sản phẩm phù hợp"
           class="opacity-70 w-full h-auto dark:opacity-100"
@@ -74,7 +74,7 @@ const showInitialEmpty = computed(() => {
     >
       <div class="max-w-xs mx-auto mb-4">
         <img
-          src="@assets/others/drink-default.png"
+          src="@assets/images/others/error-404.png"
           :alt="`Chưa có ${dataType} nào được tạo`"
           :title="`Chưa có ${dataType} nào được tạo`"
           class="opacity-70 w-full h-auto dark:opacity-100"

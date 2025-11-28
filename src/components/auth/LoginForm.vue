@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useModalStore } from '@/stores/modalStore'
 import { useUserStore } from '@/stores/userStore'
+import { useCartStore } from '@/stores/cartStore'
 import SocialLoginButtons from './SocialLoginButtons.vue'
 
 const email = ref('')
@@ -10,16 +11,22 @@ const showPassword = ref(false)
 
 const modal = useModalStore()
 const auth = useUserStore()
+const cart = useCartStore()
 
 const handleLogin = async () => {
   try {
+    // 1. Đăng nhập & Lấy Token + User Info
     await auth.login(email.value, password.value)
 
-    // Đóng modal khi đăng nhập thành công
+    // 2. Đóng modal ngay lập tức để User thấy phản hồi nhanh
     modal.closeLoginModal()
 
+    // 3. Gọi lấy giỏ hàng (Không cần await nếu muốn nó chạy ngầm)
+    // Tuy nhiên, nếu muốn chắc chắn giỏ hàng đã về trước khi user làm gì đó tiếp theo:
+    await cart.fetchCart()
   } catch (err) {
     console.error('Lỗi đăng nhập:', err.message)
+    // Lưu ý: auth.error đã được update trong store nên template sẽ tự hiện lỗi
   }
 }
 </script>
